@@ -110,6 +110,21 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Fetch server health status
+  Future<void> fetchHealthStatus() async {
+    final result = await _getHealthStatus();
+    result.fold(
+      (failure) {
+        debugPrint('Failed to fetch health status: $failure');
+      },
+      (healthStatus) {
+        _healthStatus = healthStatus;
+        _serverVersion = healthStatus.version;
+      },
+    );
+    notifyListeners();
+  }
+
   /// 更新服务器配置
   Future<bool> updateServerConfig(String host, int port) async {
     final params = UpdateServerConfigParams(host: host, port: port);

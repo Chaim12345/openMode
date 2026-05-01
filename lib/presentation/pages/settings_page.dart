@@ -133,7 +133,9 @@ class _SettingsPageState extends State<SettingsPage> {
           _buildSectionHeader('Connection'),
           Consumer<AppProvider>(
             builder: (context, appProvider, child) {
-              return ListTile(
+              return Column(
+            children: [
+              ListTile(
                 leading: Icon(
                   appProvider.isConnected
                       ? Icons.cloud_done
@@ -153,7 +155,30 @@ class _SettingsPageState extends State<SettingsPage> {
                     }
                   },
                 ),
-              );
+              ),
+              if (appProvider.serverVersion != null)
+                ListTile(
+                  leading: const Icon(Icons.verified),
+                  title: const Text('Server Version'),
+                  subtitle: Text(appProvider.serverVersion!),
+                ),
+              if (appProvider.healthStatus != null)
+                ListTile(
+                  leading: Icon(
+                    appProvider.healthStatus!.healthy
+                        ? Icons.check_circle
+                        : Icons.error,
+                    color: appProvider.healthStatus!.healthy
+                        ? Colors.green
+                        : Colors.orange,
+                  ),
+                  title: const Text('Health'),
+                  subtitle: Text(
+                    appProvider.healthStatus!.healthy ? 'Healthy' : 'Unhealthy',
+                  ),
+                ),
+            ],
+          );
             },
           ),
         ],

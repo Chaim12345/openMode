@@ -17,8 +17,6 @@ class GetHealthStatus {
       final responseData = response.data;
       
       if (responseData is Map<String, dynamic>) {
-        // Assuming HealthStatus has a fromJson or similar constructor
-        // We need to check the HealthStatus entity
         return Right(HealthStatus.fromJson(responseData));
       }
 
