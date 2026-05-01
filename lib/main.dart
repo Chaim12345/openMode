@@ -4,8 +4,7 @@ import 'core/di/injection_container.dart' as di;
 import 'presentation/theme/app_theme.dart';
 import 'presentation/providers/app_provider.dart';
 import 'presentation/providers/project_provider.dart';
-import 'presentation/providers/chat_provider.dart';
-import 'presentation/pages/chat_page.dart';
+import 'presentation/pages/main_page.dart';
 import 'core/constants/app_constants.dart';
 
 void main() async {
@@ -32,11 +31,8 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.darkTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.dark, // Default to dark theme
-        // Start directly with AI Chat page
-        home: ChangeNotifierProvider(
-          create: (_) => di.sl<ChatProvider>(),
-          child: const ChatPage(),
-        ),
+        // Use MainPage with bottom navigation
+        home: const MainPage(),
         debugShowCheckedModeBanner: false,
       ),
     );
