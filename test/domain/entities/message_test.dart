@@ -14,10 +14,10 @@ void main() {
     test('should create MessageTime', () {
       final time = MessageTime(
         created: 1234567890,
-        updated: 1234567890,
+        completed: 1234567890,
       );
       expect(time.created, 1234567890);
-      expect(time.updated, 1234567890);
+      expect(time.completed, 1234567890);
     });
   });
 
@@ -25,7 +25,7 @@ void main() {
     test('should create UserMessage', () {
       final time = MessageTime(
         created: 1234567890,
-        updated: 1234567890,
+        completed: 1234567890,
       );
       final message = UserMessage(
         id: 'msg-123',

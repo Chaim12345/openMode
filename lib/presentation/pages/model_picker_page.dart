@@ -27,23 +27,23 @@ class _ModelPickerPageState extends State<ModelPickerPage> {
   Future<void> _loadProviders() async {
     setState(() => _isLoading = true);
     try {
-      final appProvider = context.read<AppProvider>();
-      final result = await appProvider.getProviders();
-    if (result == null) return;
-      result.fold(
-        (failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to load providers: $failure')),
-          );
-        },
-        (response) {
-          setState(() {
-            _providersResponse = response;
-            _selectedProviderId = response.defaultModels.keys.first;
-            _selectedModelId = response.defaultModels.values.first;
-          });
-        },
+    final result = await appProvider.getProviders();
+    if (result == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load providers')),
       );
+      return;
+    }
+    // Success - providers loaded
+    setState(() {
+      _providersResponse = result;
+      if (result.providers.isNotEmpty) {
+        _selectedProviderId = result.providers.first.id;
+        if (result.providers.first.models.isNotEmpty) {
+          _selectedModelId = result.providers.first.models.keys.first;
+        }
+      }
+    });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
