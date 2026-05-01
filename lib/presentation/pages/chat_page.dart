@@ -10,6 +10,8 @@ import '../widgets/chat_message_widget.dart';
 import '../widgets/chat_input_widget.dart';
 import '../widgets/chat_session_list.dart';
 import '../widgets/agent_selector.dart';
+import '../widgets/vcs_info_widget.dart';
+import 'session_diff_page.dart';
 import '../../domain/entities/file_info.dart';
 
 /// Chat page
@@ -236,6 +238,7 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
         actions: [
+          const VcsInfoWidget(),
         // Agent selector
         AgentSelector(
           onAgentSelected: (agentName) {
@@ -264,8 +267,28 @@ class _ChatPageState extends State<ChatPage> {
                       await _createNewSession();
                       break;
                     case 'refresh':
-                      await chatProvider.refresh();
-                      break;
+      await chatProvider.refresh();
+      break;
+    case 'view_diff':
+      if (chatProvider.currentSession != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SessionDiffPage(
+              sessionId: chatProvider.currentSession!.id,
+            ),
+          ),
+        );
+      }
+      break;
+    case 'fork_session':
+      await chatProvider.forkCurrentSession();
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Session forked')),
+        );
+      }
+      break;
                   }
                 },
                 itemBuilder: (context) => [
@@ -289,7 +312,27 @@ class _ChatPageState extends State<ChatPage> {
                       ],
                     ),
                   ),
-                ],
+                    const PopupMenuItem(
+      value: 'view_diff',
+      child: Row(
+        children: [
+          Icon(Icons.difference),
+          SizedBox(width: 8),
+          Text('View Diff'),
+        ],
+      ),
+    ),
+    const PopupMenuItem(
+      value: 'fork_session',
+      child: Row(
+        children: [
+          Icon(Icons.call_split),
+          SizedBox(width: 8),
+          Text('Fork Session'),
+        ],
+      ),
+    ),
+],
               );
             },
           ),

@@ -22,6 +22,7 @@ import '../../domain/usecases/abort_session.dart';
 import '../../domain/usecases/revert_message.dart';
 import '../../domain/usecases/unrevert_messages.dart';
 import '../../domain/usecases/fork_session.dart';
+import '../../domain/usecases/get_health_status.dart';
 import '../../data/datasources/chat_remote_datasource.dart';
 import '../../data/repositories/chat_repository_impl.dart';
 import '../../domain/repositories/chat_repository.dart';
@@ -94,6 +95,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => RevertMessage(sl()));
   sl.registerLazySingleton(() => UnrevertMessages(sl()));
   sl.registerLazySingleton(() => ForkSession(sl()));
+  sl.registerLazySingleton(() => GetHealthStatus(sl()));
 
   // State management
   sl.registerFactory(
@@ -101,6 +103,8 @@ Future<void> init() async {
       getAppInfo: sl(),
       checkConnection: sl(),
       updateServerConfig: sl(),
+      getProviders: sl(),
+      getHealthStatus: sl(),
     ),
   );
 
@@ -111,6 +115,7 @@ Future<void> init() async {
       createChatSession: sl(),
       getChatMessages: sl(),
       getProviders: sl(),
+      getHealthStatus: sl(),
       deleteChatSession: sl(),
       updateChatSession: sl(),
       shareChatSession: sl(),
