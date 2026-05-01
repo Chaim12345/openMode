@@ -9,20 +9,20 @@ import 'core/constants/app_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize dependency injection
   await di.init();
-  
+
   // Load saved theme mode
   final appProvider = di.sl<AppProvider>();
   await appProvider.loadThemeMode();
-  
+
   runApp(MyApp(appProvider: appProvider));
 }
 
 class MyApp extends StatelessWidget {
   final AppProvider appProvider;
-  
+
   const MyApp({super.key, required this.appProvider});
 
   @override

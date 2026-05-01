@@ -76,4 +76,7 @@ abstract class ChatRepository {
 
   /// 总结会话
   Future<Either<Failure, void>> summarizeSession(String projectId, String sessionId, {String? directory});
+
+  /// Fork a session
+  Future<Either<Failure, ChatSession>> forkSession(String projectId, String sessionId, {String? directory});
 }

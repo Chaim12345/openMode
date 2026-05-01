@@ -193,4 +193,25 @@ class AppProvider extends ChangeNotifier {
     _selectedModelId = modelId;
     notifyListeners();
   }
+
+  /// Load theme mode from SharedPreferences
+  Future<void> loadThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('theme_mode');
+    if (saved != null) {
+      _themeMode = ThemeMode.values.firstWhere(
+        (mode) => mode.name == saved,
+        orElse: () => ThemeMode.dark,
+      );
+      notifyListeners();
+    }
+  }
+
+  /// Set and persist theme mode
+  Future<void> setThemeMode(ThemeMode mode) async {
+    _themeMode = mode;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('theme_mode', mode.name);
+  }
 }

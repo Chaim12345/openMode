@@ -309,4 +309,20 @@ class ChatRepositoryImpl implements ChatRepository {
       return const Left(UnknownFailure('未知错误'));
     }
   }
+
+  @override
+  Future<Either<Failure, ChatSession>> forkSession(String projectId, String sessionId, {String? directory}) async {
+    try {
+      final session = await remoteDataSource.forkSession(projectId, sessionId, directory: directory);
+      return Right(session.toEntity());
+    } on NotFoundException {
+      return const Left(NotFoundFailure('Session not found'));
+    } on ServerException {
+      return const Left(ServerFailure('Failed to fork session'));
+    } on NetworkException {
+      return const Left(NetworkFailure('Network connection failed'));
+    } catch (e) {
+      return const Left(UnknownFailure('Unknown error'));
+    }
+  }
 }

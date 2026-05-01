@@ -5,7 +5,6 @@ import '../providers/chat_provider.dart';
 import '../providers/project_provider.dart';
 import 'chat_page.dart';
 import 'settings_page.dart';
-import 'server_settings_page.dart';
 import 'file_browser_page.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/di/injection_container.dart';

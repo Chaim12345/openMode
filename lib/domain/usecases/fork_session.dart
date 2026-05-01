@@ -1,30 +1,31 @@
 import 'package:dartz/dartz.dart';
-import '../../core/network/dio_client.dart';
 import '../../core/errors/failures.dart';
+import '../entities/chat_session.dart';
+import '../repositories/chat_repository.dart';
 
-/// Fork session from a specific message use case
+/// Fork a chat session
 class ForkSession {
-  final DioClient dioClient;
+  final ChatRepository repository;
 
-  ForkSession(this.dioClient);
+  ForkSession(this.repository);
 
-  Future<Either<Failure, Map<String, dynamic>>> call({
+  Future<Either<Failure, ChatSession>> call({
+    required String projectId,
     required String sessionId,
-    required String fromMessageId,
+    String? directory,
   }) async {
-    try {
-      final response = await dioClient.post(
-        '/session/$sessionId/fork',
-        {'from_message_id': fromMessageId},
-      );
-
-      if (response is Map) {
-        return Right(response);
-      }
-
-      return const Left(ServerFailure('Invalid response format'));
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
+    return await repository.forkSession(projectId, sessionId, directory: directory);
   }
+}
+
+class ForkSessionParams {
+  final String projectId;
+  final String sessionId;
+  final String? directory;
+
+  const ForkSessionParams({
+    required this.projectId,
+    required this.sessionId,
+    this.directory,
+  });
 }
