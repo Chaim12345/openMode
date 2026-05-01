@@ -109,7 +109,7 @@ class _FileSearchPageState extends State<FileSearchPage> {
                           ButtonSegment(
                             value: SearchType.text,
                             label: Text('Text'),
-                            icon: Icon(Icons.search),
+                            icon: Icon(Icons.text_search),
                           ),
                         ],
                         selected: {_searchType},
@@ -131,7 +131,7 @@ class _FileSearchPageState extends State<FileSearchPage> {
                           hintText: _searchType == SearchType.filename
                               ? 'Search by filename...'
                               : 'Search text pattern...',
-                          prefixIcon: Icons.search),
+                          prefixIcon: const Icon(Icons.search),
                           border: OutlineInputBorder(),
                         ),
                         onSubmitted: (_) => _performSearch(),
@@ -139,7 +139,7 @@ class _FileSearchPageState extends State<FileSearchPage> {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      icon: Icons.search),
+                      icon: const Icon(Icons.search),
                       onPressed: _performSearch,
                       style: IconButton.styleFrom(
                         padding: const EdgeInsets.all(12),
