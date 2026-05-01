@@ -65,6 +65,9 @@ abstract class ChatRemoteDataSource {
 
   /// 总结会话
   Future<void> summarizeSession(String projectId, String sessionId, {String? directory});
+
+  /// Fork a session
+  Future<ChatSessionModel> forkSession(String projectId, String sessionId, {String? directory});
 }
 
 /// Chat remote data source实现
@@ -701,6 +704,33 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       throw const ServerException('服务器错误');
     } catch (e) {
       throw const ServerException('服务器错误');
+    }
+  }
+
+  @override
+  Future<ChatSessionModel> forkSession(String projectId, String sessionId, {String? directory}) async {
+    try {
+      final queryParams = <String, dynamic>{};
+      if (directory != null) {
+        queryParams['directory'] = directory;
+      }
+
+      final response = await dio.post(
+        '/session/$sessionId/fork',
+        queryParameters: queryParams.isNotEmpty ? queryParams : null,
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ChatSessionModel.fromJson(response.data);
+      }
+      throw const ServerException('Fork session failed');
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        throw const NotFoundException('Session not found');
+      }
+      throw const ServerException('Server error');
+    } catch (e) {
+      throw const ServerException('Server error');
     }
   }
 }

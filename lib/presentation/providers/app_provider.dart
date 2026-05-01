@@ -2,11 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/app_info.dart';
+import '../../domain/entities/health_status.dart';
 import '../../domain/entities/provider.dart';
 import '../../domain/usecases/get_app_info.dart';
 import '../../domain/usecases/get_providers.dart';
 import '../../domain/usecases/check_connection.dart';
 import '../../domain/usecases/update_server_config.dart';
+import '../../domain/usecases/get_health_status.dart';
 import '../../core/constants/api_constants.dart';
 
 /// 应用状态枚举
@@ -18,16 +20,19 @@ class AppProvider extends ChangeNotifier {
   final CheckConnection _checkConnection;
   final UpdateServerConfig _updateServerConfig;
   final GetProviders _getProviders;
+  final GetHealthStatus _getHealthStatus;
 
   AppProvider({
     required GetAppInfo getAppInfo,
     required CheckConnection checkConnection,
     required UpdateServerConfig updateServerConfig,
     required GetProviders getProviders,
+    required GetHealthStatus getHealthStatus,
   }) : _getAppInfo = getAppInfo,
        _checkConnection = checkConnection,
        _updateServerConfig = updateServerConfig,
-       _getProviders = getProviders;
+       _getProviders = getProviders,
+       _getHealthStatus = getHealthStatus;
 
   // 状态
   AppStatus _status = AppStatus.initial;
@@ -43,6 +48,7 @@ class AppProvider extends ChangeNotifier {
   String? _selectedModelId;
   String? _serverVersion;
   ProvidersResponse? _providersResponse;
+  HealthStatus? _healthStatus;
 
   // Getters
   AppStatus get status => _status;
@@ -57,6 +63,7 @@ class AppProvider extends ChangeNotifier {
   String? get selectedModelId => _selectedModelId;
   ProvidersResponse? get providersResponse => _providersResponse;
   String? get serverVersion => _serverVersion;
+  HealthStatus? get healthStatus => _healthStatus;
 
   /// 获取应用信息
   Future<void> getAppInfo() async {
@@ -82,14 +89,9 @@ class AppProvider extends ChangeNotifier {
 
   /// 检查服务器连接
   Future<void> checkConnection() async {
-    try {
-      // Version fetch will be done separately if needed
-      // _dioClient is not available in this context
-    } catch (_) {
-      // Version fetch failed, but continue with connection check
-    }
-    
-    //
+    // Fetch health status for version info
+    await fetchHealthStatus();
+
     final result = await _checkConnection();
 
     result.fold(
@@ -189,50 +191,39 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  /// Load saved theme mode from SharedPreferences
-  Future<void> loadThemeMode() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final themeModeString = prefs.getString('theme_mode');
-      if (themeModeString != null) {
-        switch (themeModeString) {
-          case 'light':
-            _themeMode = ThemeMode.light;
-            break;
-          case 'dark':
-            _themeMode = ThemeMode.dark;
-            break;
-          case 'system':
-            _themeMode = ThemeMode.system;
-            break;
-        }
-      }
-    } catch (e) {
-      debugPrint('Failed to load theme mode: $e');
-    }
+  /// Fetch server health status
+  Future<void> fetchHealthStatus() async {
+    final result = await _getHealthStatus();
+    result.fold(
+      (failure) {
+        debugPrint('Failed to fetch health status: $failure');
+      },
+      (healthStatus) {
+        _healthStatus = healthStatus;
+        _serverVersion = healthStatus.version;
+      },
+    );
     notifyListeners();
+  }
+
+  /// Load theme mode from SharedPreferences
+  Future<void> loadThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getString('theme_mode');
+    if (saved != null) {
+      _themeMode = ThemeMode.values.firstWhere(
+        (mode) => mode.name == saved,
+        orElse: () => ThemeMode.dark,
+      );
+      notifyListeners();
+    }
   }
 
   /// Save theme mode to SharedPreferences
   Future<void> saveThemeMode(ThemeMode mode) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      String themeModeString;
-      switch (mode) {
-        case ThemeMode.light:
-          themeModeString = 'light';
-          break;
-        case ThemeMode.dark:
-          themeModeString = 'dark';
-          break;
-        case ThemeMode.system:
-          themeModeString = 'system';
-          break;
-      }
-      await prefs.setString('theme_mode', themeModeString);
-    } catch (e) {
-      debugPrint('Failed to save theme mode: $e');
-    }
+    _themeMode = mode;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('theme_mode', mode.name);
   }
 }

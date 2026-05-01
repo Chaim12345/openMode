@@ -18,6 +18,7 @@ import '../../domain/usecases/unshare_chat_session.dart';
 import '../../domain/usecases/abort_session.dart';
 import '../../domain/usecases/revert_message.dart';
 import '../../domain/usecases/unrevert_messages.dart';
+import '../../domain/usecases/fork_session.dart';
 import '../../core/errors/failures.dart';
 import '../widgets/chat_input_widget.dart';
 import 'project_provider.dart';
@@ -40,6 +41,7 @@ class ChatProvider extends ChangeNotifier {
     required this.abortSession,
     required this.revertMessage,
     required this.unrevertMessages,
+    required this.forkSession,
     required this.projectProvider,
     required this.localDataSource,
   });
@@ -59,6 +61,7 @@ class ChatProvider extends ChangeNotifier {
   final AbortSession abortSession;
   final RevertMessage revertMessage;
   final UnrevertMessages unrevertMessages;
+  final ForkSession forkSession;
   final ProjectProvider projectProvider;
   final AppLocalDataSource localDataSource;
 
@@ -713,5 +716,29 @@ class ChatProvider extends ChangeNotifier {
   void dispose() {
     _messageSubscription?.cancel();
     super.dispose();
+  }
+
+  /// Fork the current session into a new session
+  Future<void> forkCurrentSession() async {
+    if (_currentSession == null) return;
+
+    final projectId = projectProvider.currentProjectId;
+
+    final result = await forkSession(
+      ForkSessionParams(
+        projectId: projectId,
+        sessionId: _currentSession!.id,
+      ),
+    );
+
+    result.fold(
+      (failure) => _handleFailure(failure),
+      (forkedSession) {
+        _sessions.insert(0, forkedSession);
+        _currentSession = forkedSession;
+        _messages = [];
+        notifyListeners();
+      },
+    );
   }
 }
