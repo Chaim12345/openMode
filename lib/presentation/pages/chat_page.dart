@@ -144,8 +144,8 @@ class _ChatPageState extends State<ChatPage> {
         // Agent selector
         AgentSelector(
           onAgentSelected: (agentName) {
-            debugPrint('Selected agent: $agentName');
-            // TODO: Store selected agent and use it when sending messages
+            
+            chatProvider.setSelectedAgent(agentName);
           },
         ),
         IconButton(
@@ -274,10 +274,28 @@ class _ChatPageState extends State<ChatPage> {
               // Message list
               Expanded(child: _buildMessageList(chatProvider)),
 
+              // Abort button (shown during generation)
+              if (chatProvider.state == ChatState.sending)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => chatProvider.abortCurrentSession(),
+                      icon: const Icon(Icons.stop, size: 16),
+                      label: const Text('Stop Generating'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.error,
+                        side: BorderSide(color: Theme.of(context).colorScheme.error),
+                      ),
+                    ),
+                  ),
+                ),
+
               // Input field
               ChatInputWidget(
-                onSendMessage: (text) async {
-                  await chatProvider.sendMessage(text);
+                onSendMessage: (text, {attachments}) async {
+                  await chatProvider.sendMessage(text, attachments: attachments);
                   // 用户发送消息后强制滚动到底部
                   _scrollToBottom(force: true);
                 },
@@ -305,8 +323,8 @@ class _ChatPageState extends State<ChatPage> {
         // Agent selector
         AgentSelector(
           onAgentSelected: (agentName) {
-            debugPrint('Selected agent: $agentName');
-            // TODO: Store selected agent and use it when sending messages
+            
+            chatProvider.setSelectedAgent(agentName);
           },
         ),
         IconButton(

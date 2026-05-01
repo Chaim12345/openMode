@@ -19,6 +19,7 @@ import '../../domain/usecases/abort_session.dart';
 import '../../domain/usecases/revert_message.dart';
 import '../../domain/usecases/unrevert_messages.dart';
 import '../../core/errors/failures.dart';
+import '../widgets/chat_input_widget.dart';
 import 'project_provider.dart';
 
 /// Chat state enum
@@ -74,6 +75,7 @@ class ChatProvider extends ChangeNotifier {
   Map<String, String> _defaultModels = {};
   String? _selectedProviderId;
   String? _selectedModelId;
+  String _selectedAgent = 'general';
 
   // Getters
   ChatState get state => _state;
@@ -338,18 +340,43 @@ class ChatProvider extends ChangeNotifier {
   }
 
   /// 发送消息
-  Future<void> sendMessage(String text) async {
-    if (_currentSession == null || text.trim().isEmpty) return;
+  Future<void> sendMessage(String text, {List<FileAttachment>? attachments}) async {
+    if (_currentSession == null) return;
+    if (text.trim().isEmpty && (attachments == null || attachments.isEmpty)) return;
 
     _setState(ChatState.sending);
 
-    // 同步项目ID（根据 ProjectProvider）
+    // Sync project ID
     _currentProjectId = projectProvider.currentProjectId;
 
-    // 生成消息 ID
+    // Generate message ID
     final messageId = 'msg_${DateTime.now().millisecondsSinceEpoch}';
 
-    // 添加用户消息到界面
+    // Build input parts from text and attachments
+    final List<ChatInputPart> inputParts = [];
+
+    if (text.trim().isNotEmpty) {
+      inputParts.add(TextInputPart(text: text));
+    }
+
+    if (attachments != null) {
+      for (final attachment in attachments) {
+        inputParts.add(FileInputPart(
+          source: FileInputSource(
+            path: attachment.path,
+            text: FileInputSourceText(
+              value: attachment.content,
+              start: 0,
+              end: attachment.content.length,
+            ),
+            type: attachment.type,
+          ),
+          filename: attachment.name,
+        ));
+      }
+    }
+
+    // Add user message to UI
     final userMessage = UserMessage(
       id: messageId,
       sessionId: _currentSession!.id,
@@ -368,50 +395,49 @@ class ChatProvider extends ChangeNotifier {
     _messages.add(userMessage);
     notifyListeners();
 
-    // 确保已初始化提供商
+    // Ensure providers are initialized
     if (_selectedProviderId == null || _selectedModelId == null) {
       await initializeProviders();
     }
 
-    // 创建聊天输入
+    // Create chat input
     final input = ChatInput(
       messageId: messageId,
-      providerId: _selectedProviderId ?? 'anthropic', // 使用选中的提供商
-      modelId: _selectedModelId ?? 'claude-3-5-sonnet-20241022', // 使用选中的模型
-      agent: 'general', // 默认 agent
-      system: '', // 默认系统提示
-      tools: const {}, // 默认工具配置
-      parts: [TextInputPart(text: text)],
+      providerId: _selectedProviderId ?? 'anthropic',
+      modelId: _selectedModelId ?? 'claude-3-5-sonnet-20241022',
+      agent: _selectedAgent,
+      system: '',
+      tools: const {},
+      parts: inputParts,
     );
 
-    // 取消之前的订阅
+    // Cancel previous subscription
     _messageSubscription?.cancel();
 
-    // 发送消息并监听流式响应
+    // Send message and listen to stream
     _messageSubscription =
         sendChatMessage(
-          SendChatMessageParams(
-            projectId: projectProvider.currentProjectId,
-            sessionId: _currentSession!.id, 
-            input: input,
-          ),
-        ).listen(
-          (result) {
-            result.fold((failure) => _handleFailure(failure), (message) {
-              // 更新或添加助手消息
-              _updateOrAddMessage(message);
-            });
-          },
-          onError: (error) {
-            _setError('发送消息失败: $error');
-          },
-          onDone: () {
-            _setState(ChatState.loaded);
-          },
-        );
+      SendChatMessageParams(
+        projectId: projectProvider.currentProjectId,
+        sessionId: _currentSession!.id,
+        input: input,
+      ),
+    ).listen(
+      (result) {
+        result.fold((failure) => _handleFailure(failure), (message) {
+          _updateOrAddMessage(message);
+        });
+      },
+      onError: (error) {
+        _setError('Failed to send message: $error');
+      },
+      onDone: () {
+        _setState(ChatState.loaded);
+      },
+    );
   }
 
-  /// 更新或添加消息
+
   void _updateOrAddMessage(ChatMessage message) {
     final index = _messages.indexWhere((m) => m.id == message.id);
     if (index != -1) {
@@ -652,6 +678,12 @@ class ChatProvider extends ChangeNotifier {
 
     // Persist selection
     _saveProviderModelSelection(providerId, modelId);
+  }
+
+  /// Select a specific agent
+  void setSelectedAgent(String agent) {
+    _selectedAgent = agent;
+    notifyListeners();
   }
 
   /// Save provider/model selection to local storage

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import '../models/chat_message_model.dart';
@@ -391,7 +392,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         );
 
         if (eventResponse.statusCode == 200) {
-      debugPrint('✅ 成功连接到事件流');
+          debugPrint('✅ 成功连接到事件流');
 
           eventSubscription = (eventResponse.data as ResponseBody).stream
               .transform(
@@ -411,7 +412,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                     final event = jsonDecode(eventData) as Map<String, dynamic>;
                     final eventType = event['type'] as String?;
 
-      debugPrint('📨 收到事件: $eventType');
+                    debugPrint('📨 收到事件: $eventType');
 
                     if (eventType == 'message.updated') {
                       final properties =
@@ -419,7 +420,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                       final info = properties?['info'] as Map<String, dynamic>?;
 
                       if (info != null && info['sessionID'] == sessionId) {
-      debugPrint('🔄 消息更新事件: ${info['id']}');
+                        debugPrint('🔄 消息更新事件: ${info['id']}');
                         // 获取完整的消息信息（包括 parts）
                          _getCompleteMessage(projectId, sessionId, info['id'] as String)
                              .then((message) {
@@ -430,7 +431,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                                 if (message.completedTime != null &&
                                     !messageCompleted) {
                                   messageCompleted = true;
-      debugPrint('🎉 消息完成，准备关闭事件流');
+                                  debugPrint('🎉 消息完成，准备关闭事件流');
                                   // 延迟关闭，确保最后的更新被处理
                                   Future.delayed(
                                     const Duration(milliseconds: 500),
@@ -443,7 +444,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                               }
                             })
                             .catchError((error) {
-      debugPrint('获取完整消息失败: $error');
+                              debugPrint('获取完整消息失败: $error');
                             });
                       }
                     } else if (eventType == 'message.part.updated') {
@@ -465,7 +466,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                                 if (message.completedTime != null &&
                                     !messageCompleted) {
                                   messageCompleted = true;
-      debugPrint('🎉 消息完成，准备关闭事件流');
+                                  debugPrint('🎉 消息完成，准备关闭事件流');
                                   // 延迟关闭，确保最后的更新被处理
                                   Future.delayed(
                                     const Duration(milliseconds: 500),
@@ -478,27 +479,27 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                               }
                             })
                             .catchError((error) {
-      debugPrint('获取完整消息失败: $error');
+                              debugPrint('获取完整消息失败: $error');
                             });
                       }
                     }
                   } catch (e) {
-      debugPrint('解析事件失败: $e');
-      debugPrint('事件数据: $eventData');
+                    debugPrint('解析事件失败: $e');
+                    debugPrint('事件数据: $eventData');
                   }
                 },
                 onError: (error) {
-      debugPrint('事件流错误: $error');
+                  debugPrint('事件流错误: $error');
                   eventController.addError(error);
                 },
                 onDone: () {
-      debugPrint('事件流结束');
+                  debugPrint('事件流结束');
                   eventController.close();
                 },
               );
         }
       } catch (e) {
-      debugPrint('连接事件流失败: $e');
+        debugPrint('连接事件流失败: $e');
       }
 
       // 发送消息请求
@@ -509,7 +510,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-      debugPrint('✅ 消息发送成功');
+        debugPrint('✅ 消息发送成功');
 
         // 获取初始消息状态
         if (input.messageId != null) {

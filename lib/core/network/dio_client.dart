@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import '../constants/api_constants.dart';
 import 'dart:convert';
@@ -61,7 +62,7 @@ class DioClient {
         logPrint: (object) {
           // Print logs in debug mode only
           if (const bool.fromEnvironment('dart.vm.product') == false) {
-            debugPrint(object.toString());
+            debugPrint(object);
           }
         },
       ),

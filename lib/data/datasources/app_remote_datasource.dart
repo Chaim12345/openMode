@@ -1,4 +1,5 @@
 import '../models/provider_model.dart';
+import 'package:flutter/foundation.dart';
 import '../models/app_info_model.dart';
 
 /// 应用远程数据源接口
