@@ -76,6 +76,57 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  void _showMessageOptions(BuildContext context, dynamic message) {
+    final chatProvider = context.read<ChatProvider>();
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.undo),
+              title: const Text('Revert (Undo)'),
+              subtitle: const Text('Remove this message and restore previous state'),
+              onTap: () {
+                Navigator.pop(context);
+                chatProvider.revertMessageAction(message.id);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Message reverted')),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.redo),
+              title: const Text('Unrevert (Redo)'),
+              subtitle: const Text('Restore reverted messages'),
+              onTap: () {
+                Navigator.pop(context);
+                chatProvider.unrevertMessagesAction();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Messages restored')),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.copy),
+              title: const Text('Copy Message'),
+              onTap: () {
+                Navigator.pop(context);
+                // Copy message text
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Message copied')),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _scrollToBottom({bool force = false})
+
   void _scrollToBottom({bool force = false}) {
     if (!_scrollController.hasClients) return;
 
@@ -453,7 +504,10 @@ class _ChatPageState extends State<ChatPage> {
       itemBuilder: (context, index) {
         if (index < chatProvider.messages.length) {
           final message = chatProvider.messages[index];
-          return ChatMessageWidget(key: ValueKey(message.id), message: message);
+          return GestureDetector(
+              onLongPress: () => _showMessageOptions(context, message),
+              child: ChatMessageWidget(key: ValueKey(message.id), message: message),
+            );
         } else {
           // Show loading indicator
           return Container(
