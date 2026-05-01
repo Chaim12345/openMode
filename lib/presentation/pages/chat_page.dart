@@ -171,8 +171,6 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  void _scrollToBottom({bool force = false})
-
   void _scrollToBottom({bool force = false}) {
     if (!_scrollController.hasClients) return;
 
@@ -242,7 +240,7 @@ class _ChatPageState extends State<ChatPage> {
         AgentSelector(
           onAgentSelected: (agentName) {
             
-            chatProvider.setSelectedAgent(agentName);
+            context.read<ChatProvider>().setSelectedAgent(agentName);
           },
         ),
         IconButton(
@@ -421,7 +419,7 @@ class _ChatPageState extends State<ChatPage> {
         AgentSelector(
           onAgentSelected: (agentName) {
             
-            chatProvider.setSelectedAgent(agentName);
+            context.read<ChatProvider>().setSelectedAgent(agentName);
           },
         ),
         IconButton(

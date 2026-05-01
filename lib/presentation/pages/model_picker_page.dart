@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider_pkg;
 import '../providers/app_provider.dart';
 import '../../domain/entities/provider.dart';
 import '../../core/constants/app_constants.dart';
@@ -29,6 +29,7 @@ class _ModelPickerPageState extends State<ModelPickerPage> {
     try {
       final appProvider = context.read<AppProvider>();
       final result = await appProvider.getProviders();
+    if (result == null) return;
       result.fold(
         (failure) {
           ScaffoldMessenger.of(context).showSnackBar(
