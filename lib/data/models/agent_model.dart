@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../../domain/entities/agent.dart';
+import '../../domain/entities/agent.dart' as domain;
 
 part 'agent_model.g.dart';
 
@@ -26,8 +26,8 @@ class AgentModel {
 
   Map<String, dynamic> toJson() => _$AgentModelToJson(this);
 
-  Agent toDomain() {
-    return Agent(
+  domain.Agent toDomain() {
+    return domain.Agent(
       name: name,
       description: description,
       mode: mode,
