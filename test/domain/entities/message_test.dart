@@ -13,8 +13,8 @@ void main() {
   group('UserMessage', () {
     test('should create UserMessage', () {
       final time = MessageTime(
-        createdAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 1, 1),
+        created: 1234567890,
+        updated: 1234567890,
       );
       final message = UserMessage(
         id: 'msg-123',

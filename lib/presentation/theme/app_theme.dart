@@ -58,7 +58,7 @@ class AppTheme {
         foregroundColor: Colors.black87,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
@@ -168,7 +168,7 @@ class AppTheme {
       ),
 
       // 卡片主题 - 现代化设计
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         elevation: 0,
         color: cardDark,
         shadowColor: Colors.black.withOpacity(0.3),
@@ -270,7 +270,7 @@ class AppTheme {
       ),
 
       // 对话框主题
-      dialogTheme: DialogThemeData(
+      dialogTheme: DialogTheme(
         backgroundColor: cardDark,
         elevation: 24,
         shape: RoundedRectangleBorder(
