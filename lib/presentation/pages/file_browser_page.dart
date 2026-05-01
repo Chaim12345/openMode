@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'code_viewer_page.dart';
 import '../providers/app_provider.dart';
 import '../../domain/entities/file_info.dart';
 import '../../core/constants/api_constants.dart';
@@ -167,10 +168,16 @@ class _FileBrowserPageState extends State<FileBrowserPage> {
                         if (file.isDirectory) {
                           _navigateTo(file.path);
                         } else {
-                          // TODO: Open file viewer
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Viewing: ${file.path}')),
-                          );
+                          // Navigate to code viewer
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => CodeViewerPage(
+      filePath: file.path,
+      fileName: file.name,
+    ),
+  ),
+);
                         }
                       },
                     );
