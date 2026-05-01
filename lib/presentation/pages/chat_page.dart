@@ -66,7 +66,7 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e) {
       // 如果初始化失败，设置错误状态
       chatProvider.clearError();
-      print('聊天初始化失败: $e');
+      debugPrint('聊天初始化失败: $e');
     }
   }
 

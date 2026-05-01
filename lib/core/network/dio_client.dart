@@ -27,7 +27,7 @@ class DioClient {
     _dio.options.baseUrl = baseUrl;
     // Log base URL change for easier debugging during configuration updates
     if (const bool.fromEnvironment('dart.vm.product') == false) {
-      print('[Dio] Base URL updated: $baseUrl');
+      debugPrint('[Dio] Base URL updated: $baseUrl');
     }
   }
 
@@ -38,7 +38,7 @@ class DioClient {
     _basicAuthHeader = 'Basic $encoded';
     _dio.options.headers[ApiConstants.authorization] = _basicAuthHeader!;
     if (const bool.fromEnvironment('dart.vm.product') == false) {
-      print('[Dio] Basic auth header set');
+      debugPrint('[Dio] Basic auth header set');
     }
   }
 
@@ -47,7 +47,7 @@ class DioClient {
     _basicAuthHeader = null;
     _dio.options.headers.remove(ApiConstants.authorization);
     if (const bool.fromEnvironment('dart.vm.product') == false) {
-      print('[Dio] Authorization header cleared');
+      debugPrint('[Dio] Authorization header cleared');
     }
   }
 
@@ -61,7 +61,7 @@ class DioClient {
         logPrint: (object) {
           // Print logs in debug mode only
           if (const bool.fromEnvironment('dart.vm.product') == false) {
-            print(object);
+            debugPrint(object.toString());
           }
         },
       ),

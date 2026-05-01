@@ -67,7 +67,7 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
       final response = await dio.post('/app/init', queryParameters: queryParams);
       return response.data['success'] ?? true;
     } catch (e) {
-      print('初始化应用时出错: $e');
+      debugPrint('初始化应用时出错: $e');
       return false;
     }
   }
@@ -77,10 +77,10 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
     try {
       final queryParams = directory != null ? {'directory': directory} : <String, dynamic>{};
       final response = await dio.get('/provider', queryParameters: queryParams);
-      print('Providers API 响应: ${response.data}');
+      debugPrint('Providers API 响应: ${response.data}');
       return ProvidersResponseModel.fromJson(response.data);
     } catch (e) {
-      print('解析提供商响应时出错: $e');
+      debugPrint('解析提供商响应时出错: $e');
       // 返回一个最小的备用响应
       return ProvidersResponseModel(
         providers: [
