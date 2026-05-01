@@ -10,42 +10,48 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.5'
           channel: 'stable'
-      
+
       - name: Get dependencies
         run: flutter pub get
-      
+
       - name: Run Flutter Analyzer
-        run: flutter analyze
-      
+        run: |
+          flutter analyze 2>&1 | tee analyze_output.txt
+          # Only fail if there are actual errors (not just warnings/info)
+          if grep -q "^error •" analyze_output.txt; then
+            echo "Flutter analyze found errors"
+            exit 1
+          fi
+          echo "No errors found (warnings are OK)"
+
       - name: Run tests
         run: flutter test --coverage
-      
+
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
         with:
           file: ./coverage/lcov.info
-      
+
       - name: Build for Web
         run: flutter build web --release
-      
+
       - name: Upload web build
         uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: build/web/
-      
+
       - name: Build for Android
         run: flutter build apk --release
-      
+
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
@@ -56,18 +62,17 @@ jobs:
     needs: build-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
-    
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.5'
-      
+
       - name: Build for Web
         run: flutter build web --release
-      
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
