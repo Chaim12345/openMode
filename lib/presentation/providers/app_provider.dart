@@ -115,8 +115,7 @@ class AppProvider extends ChangeNotifier {
     final result = await _getHealthStatus();
     result.fold(
       (failure) {
-        debugPrint('Failed to fetch health status: $failure');
-      },
+              },
       (healthStatus) {
         _healthStatus = healthStatus;
         _serverVersion = healthStatus.version;
@@ -178,8 +177,7 @@ class AppProvider extends ChangeNotifier {
       final result = await _getProviders();
       return result.fold(
         (failure) {
-          debugPrint('Failed to get providers: $failure');
-          return null;
+                    return null;
         },
         (response) {
           _providersResponse = response;
@@ -194,8 +192,7 @@ class AppProvider extends ChangeNotifier {
         },
       );
     } catch (e) {
-      debugPrint('Error getting providers: $e');
-      return null;
+            return null;
     }
   }
 

@@ -371,11 +371,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         queryParams['directory'] = directory;
       }
       
-      debugPrint('=== 开始发送消息 ===');
-      debugPrint('会话ID: $sessionId');
-      debugPrint('消息ID: ${input.messageId}');
-      debugPrint('==================');
-
+                        
       // 启动 SSE 监听器，监听消息更新事件
       final eventController = StreamController<ChatMessageModel>();
       late StreamSubscription eventSubscription;
@@ -395,8 +391,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         );
 
         if (eventResponse.statusCode == 200) {
-          debugPrint('✅ 成功连接到事件流');
-
+          
           eventSubscription = (eventResponse.data as ResponseBody).stream
               .transform(
                 StreamTransformer.fromHandlers(
@@ -415,16 +410,14 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                     final event = jsonDecode(eventData) as Map<String, dynamic>;
                     final eventType = event['type'] as String?;
 
-                    debugPrint('📨 收到事件: $eventType');
-
+                    
                     if (eventType == 'message.updated') {
                       final properties =
                           event['properties'] as Map<String, dynamic>?;
                       final info = properties?['info'] as Map<String, dynamic>?;
 
                       if (info != null && info['sessionID'] == sessionId) {
-                        debugPrint('🔄 消息更新事件: ${info['id']}');
-                        // 获取完整的消息信息（包括 parts）
+                                                // 获取完整的消息信息（包括 parts）
                          _getCompleteMessage(projectId, sessionId, info['id'] as String)
                              .then((message) {
                               if (message != null) {
@@ -434,8 +427,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                                 if (message.completedTime != null &&
                                     !messageCompleted) {
                                   messageCompleted = true;
-                                  debugPrint('🎉 消息完成，准备关闭事件流');
-                                  // 延迟关闭，确保最后的更新被处理
+                                                                    // 延迟关闭，确保最后的更新被处理
                                   Future.delayed(
                                     const Duration(milliseconds: 500),
                                     () {
@@ -447,8 +439,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                               }
                             })
                             .catchError((error) {
-                              debugPrint('获取完整消息失败: $error');
-                            });
+                                                          });
                       }
                     } else if (eventType == 'message.part.updated') {
                       final properties =
@@ -456,10 +447,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                       final part = properties?['part'] as Map<String, dynamic>?;
 
                       if (part != null && part['sessionID'] == sessionId) {
-                        debugPrint(
-                          '🔄 消息部件更新: ${part['messageID']} - ${part['id']}',
-                        );
-                        // 获取完整的消息信息
+                                                // 获取完整的消息信息
                          _getCompleteMessage(projectId, sessionId, part['messageID'] as String)
                              .then((message) {
                               if (message != null) {
@@ -469,8 +457,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                                 if (message.completedTime != null &&
                                     !messageCompleted) {
                                   messageCompleted = true;
-                                  debugPrint('🎉 消息完成，准备关闭事件流');
-                                  // 延迟关闭，确保最后的更新被处理
+                                                                    // 延迟关闭，确保最后的更新被处理
                                   Future.delayed(
                                     const Duration(milliseconds: 500),
                                     () {
@@ -482,28 +469,22 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
                               }
                             })
                             .catchError((error) {
-                              debugPrint('获取完整消息失败: $error');
-                            });
+                                                          });
                       }
                     }
                   } catch (e) {
-                    debugPrint('解析事件失败: $e');
-                    debugPrint('事件数据: $eventData');
-                  }
+                                                          }
                 },
                 onError: (error) {
-                  debugPrint('事件流错误: $error');
-                  eventController.addError(error);
+                                    eventController.addError(error);
                 },
                 onDone: () {
-                  debugPrint('事件流结束');
-                  eventController.close();
+                                    eventController.close();
                 },
               );
         }
       } catch (e) {
-        debugPrint('连接事件流失败: $e');
-      }
+              }
 
       // 发送消息请求
       final response = await dio.post(
@@ -513,8 +494,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        debugPrint('✅ 消息发送成功');
-
+        
         // 获取初始消息状态
         if (input.messageId != null) {
           final initialMessage = await _getCompleteMessage(projectId, sessionId, input.messageId!);
@@ -539,8 +519,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       }
       throw const ServerException('发送消息失败');
     } catch (e) {
-      debugPrint('发送消息异常: $e');
-      throw const ServerException('发送消息失败');
+            throw const ServerException('发送消息失败');
     }
   }
 
@@ -556,8 +535,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
         return ChatMessageModel.fromJson({...info, 'parts': parts});
       }
     } catch (e) {
-      debugPrint('获取完整消息失败: $e');
-    }
+          }
     return null;
   }
 

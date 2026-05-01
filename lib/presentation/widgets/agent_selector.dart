@@ -57,8 +57,7 @@ class _AgentSelectorState extends State<AgentSelector> {
       _selectedAgent = _agents.first.name;
       setState(() {});
     } catch (e) {
-      debugPrint('Error loading agents: $e');
-    } finally {
+          } finally {
       setState(() => _isLoading = false);
     }
   }

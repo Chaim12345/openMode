@@ -116,14 +116,12 @@ class ChatProvider extends ChangeNotifier {
       final result = await getProviders();
       result.fold(
         (failure) {
-          debugPrint('Failed to get providers: ${failure.toString()}');
-          // Use defaults as fallback
+                    // Use defaults as fallback
           _selectedProviderId = 'moonshotai-cn';
           _selectedModelId = 'kimi-k2-turbo-preview';
         },
         (providersResponse) {
-          debugPrint('Got ${providersResponse.providers.length} providers');
-          _providers = providersResponse.providers;
+                    _providers = providersResponse.providers;
           _defaultModels = providersResponse.defaultModels;
 
           if (_providers.isNotEmpty) {
@@ -145,13 +143,11 @@ class ChatProvider extends ChangeNotifier {
               _selectedModelId = selectedProvider.models.keys.first;
             }
 
-            debugPrint('Selected provider: $_selectedProviderId, model: $_selectedModelId');
-          }
+                      }
         },
       );
     } catch (e) {
-      debugPrint('Error initializing providers: $e');
-      _selectedProviderId = 'moonshotai-cn';
+            _selectedProviderId = 'moonshotai-cn';
       _selectedModelId = 'kimi-k2-turbo-preview';
     }
 
@@ -210,8 +206,7 @@ class ChatProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      debugPrint('加载缓存会话失败: $e');
-    }
+          }
   }
 
   /// 保存会话列表到缓存
@@ -223,8 +218,7 @@ class ChatProvider extends ChangeNotifier {
       final jsonString = json.encode(jsonList);
       await localDataSource.saveCachedSessions(jsonString);
     } catch (e) {
-      debugPrint('保存会话缓存失败: $e');
-    }
+          }
   }
 
   /// 保存当前会话ID
@@ -232,8 +226,7 @@ class ChatProvider extends ChangeNotifier {
     try {
       await localDataSource.saveCurrentSessionId(sessionId);
     } catch (e) {
-      debugPrint('保存当前会话ID失败: $e');
-    }
+          }
   }
 
   /// 加载上次选择的会话
@@ -247,8 +240,7 @@ class ChatProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      debugPrint('加载上次会话失败: $e');
-    }
+          }
   }
 
   /// 创建新会话
@@ -446,19 +438,15 @@ class ChatProvider extends ChangeNotifier {
     if (index != -1) {
       // 更新现有消息
       _messages[index] = message;
-      debugPrint('🔄 更新消息: ${message.id}, 部件数量: ${message.parts.length}');
-    } else {
+          } else {
       // 添加新消息
       _messages.add(message);
-      debugPrint('➕ 添加新消息: ${message.id}, 角色: ${message.role}');
-    }
+          }
 
     // 检查是否有未完成的助手消息
     if (message is AssistantMessage) {
-      debugPrint('🤖 助手消息状态: ${message.isCompleted ? "已完成" : "进行中"}');
-      if (message.isCompleted && _state == ChatState.sending) {
-        debugPrint('✅ 消息完成，更新状态为已加载');
-        _setState(ChatState.loaded);
+            if (message.isCompleted && _state == ChatState.sending) {
+                _setState(ChatState.loaded);
       }
     }
 
@@ -628,8 +616,7 @@ class ChatProvider extends ChangeNotifier {
     );
 
     result.fold((failure) {
-      debugPrint('Abort failed: ${failure.message}');
-    }, (_) {
+          }, (_) {
       _setState(ChatState.loaded);
     });
   }
@@ -695,8 +682,7 @@ class ChatProvider extends ChangeNotifier {
       await localDataSource.saveSelectedProvider(providerId);
       await localDataSource.saveSelectedModel(modelId);
     } catch (e) {
-      debugPrint('Failed to save provider/model selection: $e');
-    }
+          }
   }
 
   /// Load saved provider/model selection from local storage
@@ -708,8 +694,7 @@ class ChatProvider extends ChangeNotifier {
       if (savedModel != null) _selectedModelId = savedModel;
       notifyListeners();
     } catch (e) {
-      debugPrint('Failed to load provider/model selection: $e');
-    }
+          }
   }
 
   @override

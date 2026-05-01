@@ -1,9 +1,5 @@
-import '../../domain/entities/agent.dart';
-import 'json_serializable/json_serializable.dart';
+import '../../domain/entities/agent.dart' as domain;
 
-part 'agent_model.g.dart';
-
-@JsonSerializable()
 class AgentModel {
   final String name;
   final String description;
@@ -21,13 +17,34 @@ class AgentModel {
     this.model,
   });
 
-  factory AgentModel.fromJson(Map<String, dynamic> json) =>
-      _$AgentModelFromJson(json);
+  factory AgentModel.fromJson(Map<String, dynamic> json) {
+    return AgentModel(
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      mode: json['mode'] ?? '',
+      builtIn: json['builtIn'] ?? false,
+      tools: (json['tools'] as Map<String, dynamic>?)?.map(
+        (k, v) => MapEntry(k, v as bool),
+      ) ?? {},
+      model: json['model'] != null
+          ? AgentModelConfig.fromJson(json['model'] as Map<String, dynamic>)
+          : null,
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$AgentModelToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'mode': mode,
+      'builtIn': builtIn,
+      'tools': tools,
+      'model': model?.toJson(),
+    };
+  }
 
-  Agent toDomain() {
-    return Agent(
+  domain.Agent toDomain() {
+    return domain.Agent(
       name: name,
       description: description,
       mode: mode,
@@ -61,8 +78,8 @@ class AgentModelConfig {
     };
   }
 
-  AgentModel toDomain() {
-    return AgentModel(
+  domain.AgentModel toDomain() {
+    return domain.AgentModel(
       provider: provider,
       model: model,
     );

@@ -77,8 +77,7 @@ class _ChatPageState extends State<ChatPage> {
     } catch (e) {
       // 如果初始化失败，设置错误状态
       chatProvider.clearError();
-      debugPrint('聊天初始化失败: $e');
-    }
+          }
   }
 
   Future<void> _forkSessionFromMessage(String messageId) async {

@@ -142,8 +142,7 @@ class ProjectProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('current_project_id', projectId);
     } catch (e) {
-      debugPrint('保存项目ID失败: $e');
-    }
+          }
   }
 
   /// 设置状态

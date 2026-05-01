@@ -12,13 +12,14 @@ class GetHealthStatus {
   Future<Either<Failure, HealthStatus>> call() async {
     try {
       final response = await dioClient.get('/global/health');
+      final data = response.data;
 
-      if (response is Map<String, dynamic>) {
-        return Right(HealthStatus.fromJson(response));
+      if (data is Map<String, dynamic>) {
+        return Right(HealthStatus.fromJson(data));
       }
 
-      if (response is Map) {
-        return Right(HealthStatus.fromJson(Map<String, dynamic>.from(response)));
+      if (data is Map) {
+        return Right(HealthStatus.fromJson(Map<String, dynamic>.from(data)));
       }
 
       return const Left(ServerFailure('Invalid response format'));
