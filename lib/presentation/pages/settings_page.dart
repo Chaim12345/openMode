@@ -68,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       ],
                       onChanged: (value) {
                         if (value != null) {
-                          appProvider.setThemeMode(value);
+                          appProvider.saveThemeMode(value);
                         }
                       },
                     ),

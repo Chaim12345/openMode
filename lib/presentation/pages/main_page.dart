@@ -54,17 +54,17 @@ class _MainPageState extends State<MainPage> {
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.chat_outlined),
-            activeIcon: Icon(Icons.chat),
+            // activeIcon removed - not supported in this Flutter version
             label: 'Chat',
           ),
           NavigationDestination(
             icon: Icon(Icons.folder_outlined),
-            activeIcon: Icon(Icons.folder),
+            // activeIcon removed - not supported in this Flutter version
             label: 'Files',
           ),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
+            // activeIcon removed - not supported in this Flutter version
             label: 'Settings',
           ),
         ],

@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import '../providers/app_provider.dart';
 import '../providers/chat_provider.dart';
 import 'server_settings_page.dart';
+import 'settings_page.dart';
 
 import '../widgets/chat_message_widget.dart';
 import '../widgets/chat_input_widget.dart';

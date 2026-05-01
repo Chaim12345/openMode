@@ -83,13 +83,8 @@ class AppProvider extends ChangeNotifier {
   /// 检查服务器连接
   Future<void> checkConnection() async {
     try {
-      // Try to get health status which includes version
-      final response = await _dioClient.get('/global/health');
-      if (response != null) {
-        if (response is Map) {
-          _serverVersion = response['version'] ?? response['Version'] ?? null;
-        }
-      }
+      // Version fetch will be done separately if needed
+      // _dioClient is not available in this context
     } catch (_) {
       // Version fetch failed, but continue with connection check
     }
