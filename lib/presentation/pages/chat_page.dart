@@ -6,6 +6,7 @@ import 'server_settings_page.dart';
 import '../widgets/chat_message_widget.dart';
 import '../widgets/chat_input_widget.dart';
 import '../widgets/chat_session_list.dart';
+import '../widgets/agent_selector.dart';
 
 /// Chat page
 class ChatPage extends StatefulWidget {
@@ -134,7 +135,14 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
         actions: [
-          IconButton(
+        // Agent selector
+        AgentSelector(
+          onAgentSelected: (agentName) {
+            debugPrint('Selected agent: $agentName');
+            // TODO: Store selected agent and use it when sending messages
+          },
+        ),
+        IconButton(
             icon: const Icon(Icons.settings),
             tooltip: 'Settings',
             onPressed: () {
@@ -288,7 +296,14 @@ class _ChatPageState extends State<ChatPage> {
                 title: const Text('Conversations'),
                 automaticallyImplyLeading: false,
                 actions: [
-                  IconButton(
+        // Agent selector
+        AgentSelector(
+          onAgentSelected: (agentName) {
+            debugPrint('Selected agent: $agentName');
+            // TODO: Store selected agent and use it when sending messages
+          },
+        ),
+        IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: _createNewSession,
                     tooltip: 'New Chat',
