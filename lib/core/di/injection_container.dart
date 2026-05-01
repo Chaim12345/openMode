@@ -15,6 +15,12 @@ import '../../domain/usecases/create_chat_session.dart';
 import '../../domain/usecases/get_chat_messages.dart';
 import '../../domain/usecases/get_providers.dart';
 import '../../domain/usecases/delete_chat_session.dart';
+import '../../domain/usecases/update_chat_session.dart';
+import '../../domain/usecases/share_chat_session.dart';
+import '../../domain/usecases/unshare_chat_session.dart';
+import '../../domain/usecases/abort_session.dart';
+import '../../domain/usecases/revert_message.dart';
+import '../../domain/usecases/unrevert_messages.dart';
 import '../../data/datasources/chat_remote_datasource.dart';
 import '../../data/repositories/chat_repository_impl.dart';
 import '../../domain/repositories/chat_repository.dart';
@@ -80,6 +86,12 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetChatMessages(sl()));
   sl.registerLazySingleton(() => GetProviders(sl()));
   sl.registerLazySingleton(() => DeleteChatSession(sl()));
+  sl.registerLazySingleton(() => UpdateChatSession(sl()));
+  sl.registerLazySingleton(() => ShareChatSession(sl()));
+  sl.registerLazySingleton(() => UnshareChatSession(sl()));
+  sl.registerLazySingleton(() => AbortSession(sl()));
+  sl.registerLazySingleton(() => RevertMessage(sl()));
+  sl.registerLazySingleton(() => UnrevertMessages(sl()));
 
   // State management
   sl.registerFactory(
@@ -98,6 +110,12 @@ Future<void> init() async {
       getChatMessages: sl(),
       getProviders: sl(),
       deleteChatSession: sl(),
+      updateChatSession: sl(),
+      shareChatSession: sl(),
+      unshareChatSession: sl(),
+      abortSession: sl(),
+      revertMessage: sl(),
+      unrevertMessages: sl(),
       projectProvider: sl(),
       localDataSource: sl(),
     ),

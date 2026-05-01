@@ -12,13 +12,19 @@ import '../../domain/usecases/create_chat_session.dart';
 import '../../domain/usecases/get_chat_messages.dart';
 import '../../domain/usecases/get_providers.dart';
 import '../../domain/usecases/delete_chat_session.dart';
+import '../../domain/usecases/update_chat_session.dart';
+import '../../domain/usecases/share_chat_session.dart';
+import '../../domain/usecases/unshare_chat_session.dart';
+import '../../domain/usecases/abort_session.dart';
+import '../../domain/usecases/revert_message.dart';
+import '../../domain/usecases/unrevert_messages.dart';
 import '../../core/errors/failures.dart';
 import 'project_provider.dart';
 
-/// 聊天状态
+/// Chat state enum
 enum ChatState { initial, loading, loaded, error, sending }
 
-/// 聊天提供者
+/// Chat provider
 class ChatProvider extends ChangeNotifier {
   ChatProvider({
     required this.sendChatMessage,
@@ -27,11 +33,17 @@ class ChatProvider extends ChangeNotifier {
     required this.getChatMessages,
     required this.getProviders,
     required this.deleteChatSession,
+    required this.updateChatSession,
+    required this.shareChatSession,
+    required this.unshareChatSession,
+    required this.abortSession,
+    required this.revertMessage,
+    required this.unrevertMessages,
     required this.projectProvider,
     required this.localDataSource,
   });
 
-  // 滚动回调
+  // Scroll callback
   VoidCallback? _scrollToBottomCallback;
 
   final SendChatMessage sendChatMessage;
@@ -40,6 +52,12 @@ class ChatProvider extends ChangeNotifier {
   final GetChatMessages getChatMessages;
   final GetProviders getProviders;
   final DeleteChatSession deleteChatSession;
+  final UpdateChatSession updateChatSession;
+  final ShareChatSession shareChatSession;
+  final UnshareChatSession unshareChatSession;
+  final AbortSession abortSession;
+  final RevertMessage revertMessage;
+  final UnrevertMessages unrevertMessages;
   final ProjectProvider projectProvider;
   final AppLocalDataSource localDataSource;
 
@@ -50,7 +68,7 @@ class ChatProvider extends ChangeNotifier {
   String? _errorMessage;
   StreamSubscription<dynamic>? _messageSubscription;
 
-  // 项目和提供商相关状态
+  // Project and provider state
   String? _currentProjectId;
   List<Provider> _providers = [];
   Map<String, String> _defaultModels = {};
@@ -68,45 +86,42 @@ class ChatProvider extends ChangeNotifier {
   Map<String, String> get defaultModels => _defaultModels;
   String? get selectedProviderId => _selectedProviderId;
   String? get selectedModelId => _selectedModelId;
+  bool get isSending => _state == ChatState.sending;
 
-  /// 设置滚动到底部的回调
+  /// Set scroll to bottom callback
   void setScrollToBottomCallback(VoidCallback? callback) {
     _scrollToBottomCallback = callback;
   }
 
-  /// 设置状态
+  /// Set state
   void _setState(ChatState newState) {
     _state = newState;
     notifyListeners();
   }
 
-  /// 设置错误
+  /// Set error
   void _setError(String message) {
     _errorMessage = message;
     _setState(ChatState.error);
   }
 
-  /// 初始化提供商
+  /// Initialize providers
   Future<void> initializeProviders() async {
     try {
       final result = await getProviders();
       result.fold(
         (failure) {
-          print('获取提供商失败: ${failure.toString()}');
-          // 使用默认值作为备用
-          _selectedProviderId = 'moonshotai-cn'; // 从响应中看到的第一个提供商
-          _selectedModelId = 'kimi-k2-turbo-preview'; // 从响应中看到的模型
+          debugPrint('Failed to get providers: ${failure.toString()}');
+          // Use defaults as fallback
+          _selectedProviderId = 'moonshotai-cn';
+          _selectedModelId = 'kimi-k2-turbo-preview';
         },
         (providersResponse) {
-          print('成功获取提供商: ${providersResponse.providers.length} 个');
+          debugPrint('Got ${providersResponse.providers.length} providers');
           _providers = providersResponse.providers;
           _defaultModels = providersResponse.defaultModels;
 
-          // 选择默认模型，优先级：
-          // 1. Anthropic 提供商（如果可用）
-          // 2. 第一个可用的提供商
           if (_providers.isNotEmpty) {
-            // 尝试找到 Anthropic 提供商
             Provider selectedProvider;
             final anthropicProvider = _providers
                 .where((p) => p.id == 'anthropic')
@@ -119,23 +134,25 @@ class ChatProvider extends ChangeNotifier {
 
             _selectedProviderId = selectedProvider.id;
 
-            // 获取默认模型或第一个可用模型
             if (_defaultModels.containsKey(selectedProvider.id)) {
               _selectedModelId = _defaultModels[selectedProvider.id];
             } else if (selectedProvider.models.isNotEmpty) {
               _selectedModelId = selectedProvider.models.keys.first;
             }
 
-            print('选择了提供商: $_selectedProviderId, 模型: $_selectedModelId');
+            debugPrint('Selected provider: $_selectedProviderId, model: $_selectedModelId');
           }
         },
       );
     } catch (e) {
-      print('初始化提供商时发生异常: $e');
-      // 使用默认值作为备用
+      debugPrint('Error initializing providers: $e');
       _selectedProviderId = 'moonshotai-cn';
       _selectedModelId = 'kimi-k2-turbo-preview';
     }
+
+    // Load saved provider/model selection (overrides defaults)
+    await loadProviderModelSelection();
+
     notifyListeners();
   }
 
@@ -188,7 +205,7 @@ class ChatProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print('加载缓存会话失败: $e');
+      debugPrint('加载缓存会话失败: $e');
     }
   }
 
@@ -201,7 +218,7 @@ class ChatProvider extends ChangeNotifier {
       final jsonString = json.encode(jsonList);
       await localDataSource.saveCachedSessions(jsonString);
     } catch (e) {
-      print('保存会话缓存失败: $e');
+      debugPrint('保存会话缓存失败: $e');
     }
   }
 
@@ -210,7 +227,7 @@ class ChatProvider extends ChangeNotifier {
     try {
       await localDataSource.saveCurrentSessionId(sessionId);
     } catch (e) {
-      print('保存当前会话ID失败: $e');
+      debugPrint('保存当前会话ID失败: $e');
     }
   }
 
@@ -225,7 +242,7 @@ class ChatProvider extends ChangeNotifier {
         }
       }
     } catch (e) {
-      print('加载上次会话失败: $e');
+      debugPrint('加载上次会话失败: $e');
     }
   }
 
@@ -400,18 +417,18 @@ class ChatProvider extends ChangeNotifier {
     if (index != -1) {
       // 更新现有消息
       _messages[index] = message;
-      print('🔄 更新消息: ${message.id}, 部件数量: ${message.parts.length}');
+      debugPrint('🔄 更新消息: ${message.id}, 部件数量: ${message.parts.length}');
     } else {
       // 添加新消息
       _messages.add(message);
-      print('➕ 添加新消息: ${message.id}, 角色: ${message.role}');
+      debugPrint('➕ 添加新消息: ${message.id}, 角色: ${message.role}');
     }
 
     // 检查是否有未完成的助手消息
     if (message is AssistantMessage) {
-      print('🤖 助手消息状态: ${message.isCompleted ? "已完成" : "进行中"}');
+      debugPrint('🤖 助手消息状态: ${message.isCompleted ? "已完成" : "进行中"}');
       if (message.isCompleted && _state == ChatState.sending) {
-        print('✅ 消息完成，更新状态为已加载');
+        debugPrint('✅ 消息完成，更新状态为已加载');
         _setState(ChatState.loaded);
       }
     }
@@ -482,17 +499,181 @@ class ChatProvider extends ChangeNotifier {
     });
   }
 
-  /// 刷新当前会话
+  /// Refresh current session
   Future<void> refresh() async {
     if (_currentSession != null) {
       await loadMessages(_currentSession!.id);
     } else {
-      // 如果没有当前会话，重新加载会话列表
       if (_sessions.isNotEmpty) {
-        // 假设我们有 workspaceId，实际应该从应用状态中获取
-        // 这里需要根据实际情况调整
         _setState(ChatState.loaded);
       }
+    }
+  }
+
+  /// Update session (e.g. rename)
+  Future<void> updateSession(String sessionId, {String? title}) async {
+    final projectId = projectProvider.currentProjectId;
+
+    final result = await updateChatSession(
+      UpdateChatSessionParams(
+        projectId: projectId,
+        sessionId: sessionId,
+        input: SessionUpdateInput(title: title),
+      ),
+    );
+
+    result.fold((failure) => _handleFailure(failure), (updatedSession) {
+      // Update session in local list
+      final index = _sessions.indexWhere((s) => s.id == sessionId);
+      if (index != -1) {
+        _sessions[index] = updatedSession;
+      }
+      // Update current session if it's the one being renamed
+      if (_currentSession?.id == sessionId) {
+        _currentSession = updatedSession;
+      }
+      notifyListeners();
+    });
+  }
+
+  /// Share session
+  Future<void> shareCurrentSession(String sessionId) async {
+    final projectId = projectProvider.currentProjectId;
+
+    final result = await shareChatSession(
+      ShareChatSessionParams(
+        projectId: projectId,
+        sessionId: sessionId,
+      ),
+    );
+
+    result.fold((failure) => _handleFailure(failure), (updatedSession) {
+      final index = _sessions.indexWhere((s) => s.id == sessionId);
+      if (index != -1) {
+        _sessions[index] = updatedSession;
+      }
+      if (_currentSession?.id == sessionId) {
+        _currentSession = updatedSession;
+      }
+      notifyListeners();
+    });
+  }
+
+  /// Unshare session
+  Future<void> unshareCurrentSession(String sessionId) async {
+    final projectId = projectProvider.currentProjectId;
+
+    final result = await unshareChatSession(
+      UnshareChatSessionParams(
+        projectId: projectId,
+        sessionId: sessionId,
+      ),
+    );
+
+    result.fold((failure) => _handleFailure(failure), (updatedSession) {
+      final index = _sessions.indexWhere((s) => s.id == sessionId);
+      if (index != -1) {
+        _sessions[index] = updatedSession;
+      }
+      if (_currentSession?.id == sessionId) {
+        _currentSession = updatedSession;
+      }
+      notifyListeners();
+    });
+  }
+
+  /// Abort current generation
+  Future<void> abortCurrentSession() async {
+    if (_currentSession == null) return;
+
+    final projectId = projectProvider.currentProjectId;
+
+    _messageSubscription?.cancel();
+    _messageSubscription = null;
+
+    final result = await abortSession(
+      AbortSessionParams(
+        projectId: projectId,
+        sessionId: _currentSession!.id,
+      ),
+    );
+
+    result.fold((failure) {
+      debugPrint('Abort failed: ${failure.message}');
+    }, (_) {
+      _setState(ChatState.loaded);
+    });
+  }
+
+  /// Revert (undo) a specific message
+  Future<void> revertMessageAction(String messageId) async {
+    if (_currentSession == null) return;
+
+    final projectId = projectProvider.currentProjectId;
+
+    final result = await revertMessage(
+      RevertMessageParams(
+        projectId: projectId,
+        sessionId: _currentSession!.id,
+        messageId: messageId,
+      ),
+    );
+
+    result.fold((failure) => _handleFailure(failure), (_) {
+      // Reload messages to reflect the revert
+      loadMessages(_currentSession!.id);
+    });
+  }
+
+  /// Unrevert (redo) previously reverted messages
+  Future<void> unrevertMessagesAction() async {
+    if (_currentSession == null) return;
+
+    final projectId = projectProvider.currentProjectId;
+
+    final result = await unrevertMessages(
+      UnrevertMessagesParams(
+        projectId: projectId,
+        sessionId: _currentSession!.id,
+      ),
+    );
+
+    result.fold((failure) => _handleFailure(failure), (_) {
+      // Reload messages to reflect the unrevert
+      loadMessages(_currentSession!.id);
+    });
+  }
+
+  /// Select a specific provider and model
+  void selectProviderModel(String providerId, String modelId) {
+    _selectedProviderId = providerId;
+    _selectedModelId = modelId;
+    notifyListeners();
+
+    // Persist selection
+    _saveProviderModelSelection(providerId, modelId);
+  }
+
+  /// Save provider/model selection to local storage
+  Future<void> _saveProviderModelSelection(String providerId, String modelId) async {
+    try {
+      await localDataSource.saveSelectedProvider(providerId);
+      await localDataSource.saveSelectedModel(modelId);
+    } catch (e) {
+      debugPrint('Failed to save provider/model selection: $e');
+    }
+  }
+
+  /// Load saved provider/model selection from local storage
+  Future<void> loadProviderModelSelection() async {
+    try {
+      final savedProvider = await localDataSource.getSelectedProvider();
+      final savedModel = await localDataSource.getSelectedModel();
+      if (savedProvider != null) _selectedProviderId = savedProvider;
+      if (savedModel != null) _selectedModelId = savedModel;
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Failed to load provider/model selection: $e');
     }
   }
 

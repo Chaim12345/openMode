@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../../domain/entities/chat_session.dart';
+import '../providers/chat_provider.dart';
 
 /// Chat session list widget
 class ChatSessionList extends StatelessWidget {
@@ -141,7 +144,7 @@ class ChatSessionList extends StatelessWidget {
                     _showRenameDialog(context, session);
                     break;
                   case 'share':
-                    _shareSession(session);
+                    _shareSession(context, session);
                     break;
                   case 'delete':
                     _showDeleteDialog(context, session);
@@ -238,7 +241,7 @@ class ChatSessionList extends StatelessWidget {
 
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Text('Rename Conversation'),
         content: TextField(
           controller: controller,
@@ -250,15 +253,18 @@ class ChatSessionList extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
               final newTitle = controller.text.trim();
               if (newTitle.isNotEmpty) {
-                // TODO: Implement rename functionality
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
+                context.read<ChatProvider>().updateSession(
+                      session.id,
+                      title: newTitle,
+                    );
               }
             },
             child: const Text('OK'),
@@ -268,8 +274,65 @@ class ChatSessionList extends StatelessWidget {
     );
   }
 
-  void _shareSession(ChatSession session) {
-    // TODO: Implement share/unshare functionality
+  void _shareSession(BuildContext context, ChatSession session) {
+    final chatProvider = context.read<ChatProvider>();
+    if (session.shared) {
+      chatProvider.unshareCurrentSession(session.id);
+    } else {
+      chatProvider.shareCurrentSession(session.id).then((_) {
+        // After sharing, find the updated session and copy its URL
+        final updatedSession = chatProvider.sessions
+            .where((s) => s.id == session.id)
+            .firstOrNull;
+        if (updatedSession != null && updatedSession.shared) {
+          // Show share URL in a dialog
+          _showShareUrlDialog(context, updatedSession);
+        }
+      });
+    }
+  }
+
+  void _showShareUrlDialog(BuildContext context, ChatSession session) {
+    final shareUrl = session.path?.root ?? '';
+    if (shareUrl.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Session shared successfully')),
+      );
+      return;
+    }
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Session Shared'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('Share URL:'),
+            const SizedBox(height: 8),
+            SelectableText(
+              shareUrl,
+              style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: shareUrl));
+              Navigator.of(dialogContext).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('URL copied to clipboard')),
+              );
+            },
+            child: const Text('Copy URL'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showDeleteDialog(BuildContext context, ChatSession session) {

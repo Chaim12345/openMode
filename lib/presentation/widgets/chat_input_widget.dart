@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 /// Chat input widget
 class ChatInputWidget extends StatefulWidget {
@@ -8,17 +10,33 @@ class ChatInputWidget extends StatefulWidget {
     this.enabled = true,
   });
 
-  final Function(String message) onSendMessage;
+  final Function(String message, {List<FileAttachment>? attachments}) onSendMessage;
   final bool enabled;
 
   @override
   State<ChatInputWidget> createState() => _ChatInputWidgetState();
 }
 
+/// File attachment data
+class FileAttachment {
+  const FileAttachment({
+    required this.path,
+    required this.name,
+    required this.content,
+    required this.type,
+  });
+
+  final String path;
+  final String name;
+  final String content;
+  final String type; // mime type or 'text'
+}
+
 class _ChatInputWidgetState extends State<ChatInputWidget> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isComposing = false;
+  final List<FileAttachment> _attachments = [];
 
   @override
   void dispose() {
@@ -29,9 +47,13 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
 
   void _handleSendMessage() {
     final text = _controller.text.trim();
-    if (text.isNotEmpty && widget.enabled) {
-      widget.onSendMessage(text);
+    if ((text.isNotEmpty || _attachments.isNotEmpty) && widget.enabled) {
+      widget.onSendMessage(
+        text,
+        attachments: _attachments.isNotEmpty ? List.from(_attachments) : null,
+      );
       _controller.clear();
+      _attachments.clear();
       setState(() {
         _isComposing = false;
       });
@@ -40,7 +62,14 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
 
   void _handleTextChanged(String text) {
     setState(() {
-      _isComposing = text.trim().isNotEmpty;
+      _isComposing = text.trim().isNotEmpty || _attachments.isNotEmpty;
+    });
+  }
+
+  void _removeAttachment(int index) {
+    setState(() {
+      _attachments.removeAt(index);
+      _isComposing = _controller.text.trim().isNotEmpty || _attachments.isNotEmpty;
     });
   }
 
@@ -181,6 +210,31 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                 ),
               ),
 
+              // Attachment chips
+              if (_attachments.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Wrap(
+                    spacing: 4,
+                    runSpacing: 4,
+                    children: _attachments.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final attachment = entry.value;
+                      return Chip(
+                        label: Text(
+                          attachment.name,
+                          style: const TextStyle(fontSize: 11),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        deleteIcon: const Icon(Icons.close, size: 14),
+                        onDeleted: () => _removeAttachment(index),
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      );
+                    }).toList(),
+                  ),
+                ),
+
               const SizedBox(width: 12),
 
               // Send button - modern design
@@ -292,24 +346,82 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
     );
   }
 
-  void _pickImage() {
-    // TODO: Implement image selection functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Image selection feature coming soon')),
-    );
+  void _pickImage() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        withData: true,
+      );
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        final content = file.bytes != null
+            ? String.fromCharCodes(file.bytes!)
+            : '';
+        setState(() {
+          _attachments.add(FileAttachment(
+            path: file.path ?? '',
+            name: file.name,
+            content: content,
+            type: 'image',
+          ));
+          _isComposing = true;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to pick image: $e')),
+        );
+      }
+    }
   }
 
-  void _pickFile() {
-    // TODO: Implement file selection functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('File selection feature coming soon')),
-    );
+  void _pickFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.any,
+        withData: true,
+      );
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        // Try to read file as text for code files
+        String content = '';
+        if (file.bytes != null) {
+          try {
+            content = String.fromCharCodes(file.bytes!);
+          } catch (_) {
+            content = '[Binary file - ${file.size} bytes]';
+          }
+        } else if (file.path != null) {
+          try {
+            content = File(file.path!).readAsStringSync();
+          } catch (_) {
+            content = '[Binary file - ${file.size} bytes]';
+          }
+        }
+        setState(() {
+          _attachments.add(FileAttachment(
+            path: file.path ?? '',
+            name: file.name,
+            content: content,
+            type: 'text',
+          ));
+          _isComposing = true;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to pick file: $e')),
+        );
+      }
+    }
   }
 
   void _takePhoto() {
-    // TODO: Implement camera functionality
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Camera feature coming soon')));
+    // Camera requires native plugin setup not available in current config
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Camera feature requires native setup. Use file picker instead.')),
+    );
   }
 }
