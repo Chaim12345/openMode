@@ -27,6 +27,7 @@ class _ModelPickerPageState extends State<ModelPickerPage> {
   Future<void> _loadProviders() async {
     setState(() => _isLoading = true);
     try {
+    final appProvider = context.read<AppProvider>();
     final result = await appProvider.getProviders();
     if (result == null) {
       ScaffoldMessenger.of(context).showSnackBar(
