@@ -5,6 +5,7 @@ import '../providers/chat_provider.dart';
 import '../providers/project_provider.dart';
 import 'chat_page.dart';
 import 'server_settings_page.dart';
+import 'file_browser_page.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/di/injection_container.dart';
 
@@ -30,9 +31,7 @@ class _MainPageState extends State<MainPage> {
         create: (_) => sl<ChatProvider>(),
         child: const ChatPage(),
       ),
-      const Center(
-        child: Text('Files Page - Coming Soon'),
-      ),
+      const FileBrowserPage(),
       const Center(
         child: Text('Settings Page - Coming Soon'),
       ),
