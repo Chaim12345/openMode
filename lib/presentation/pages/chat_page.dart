@@ -206,7 +206,7 @@ class _ChatPageState extends State<ChatPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ServerSettingsPage(),
+                  builder: (context) => const SettingsPage(),
                 ),
               );
             },

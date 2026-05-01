@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/app_info.dart';
 import '../../domain/entities/provider.dart';
@@ -35,6 +36,7 @@ class AppProvider extends ChangeNotifier {
   String _serverHost = ApiConstants.defaultHost;
   int _serverPort = ApiConstants.defaultPort;
   bool _isConnected = false;
+  ThemeMode _themeMode = ThemeMode.dark;
   
   // Selected model/provider state
   String? _selectedProviderId;
@@ -48,6 +50,7 @@ class AppProvider extends ChangeNotifier {
   String get serverHost => _serverHost;
   int get serverPort => _serverPort;
   bool get isConnected => _isConnected;
+  ThemeMode get themeMode => _themeMode;
   String get serverUrl => 'http://$_serverHost:$_serverPort';
   String? get selectedProviderId => _selectedProviderId;
   String? get selectedModelId => _selectedModelId;

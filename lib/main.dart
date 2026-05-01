@@ -9,31 +9,40 @@ import 'core/constants/app_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  
   // Initialize dependency injection
   await di.init();
-
-  runApp(const MyApp());
+  
+  // Load saved theme mode
+  final appProvider = di.sl<AppProvider>();
+  await appProvider.loadThemeMode();
+  
+  runApp(MyApp(appProvider: appProvider));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppProvider appProvider;
+  
+  const MyApp({super.key, required this.appProvider});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => di.sl<AppProvider>()),
+        ChangeNotifierProvider.value(value: appProvider),
         ChangeNotifierProvider(create: (_) => di.sl<ProjectProvider>()),
       ],
-      child: MaterialApp(
-        title: AppConstants.appName,
-        theme: AppTheme.darkTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.dark, // Default to dark theme
-        // Use MainPage with bottom navigation
-        home: const MainPage(),
-        debugShowCheckedModeBanner: false,
+      child: Consumer<AppProvider>(
+        builder: (context, appProvider, child) {
+          return MaterialApp(
+            title: AppConstants.appName,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: appProvider.themeMode,
+            home: const MainPage(),
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }
