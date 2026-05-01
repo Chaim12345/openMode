@@ -7,12 +7,18 @@ import '../widgets/chat_message_widget.dart';
 import '../widgets/chat_input_widget.dart';
 import '../widgets/chat_session_list.dart';
 import '../widgets/agent_selector.dart';
+import '../../domain/entities/file_info.dart';
 
 /// Chat page
 class ChatPage extends StatefulWidget {
   final String? projectId;
   
-  const ChatPage({super.key, this.projectId});
+  const ChatPage({
+    super.key,
+    this.projectId,
+    this.initialAttachment,
+  });
+  final FileInfo? initialAttachment;
 
   @override
   State<ChatPage> createState() => _ChatPageState();

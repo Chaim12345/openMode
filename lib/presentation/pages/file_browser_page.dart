@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'code_viewer_page.dart';
-import 'file_search_page.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../providers/app_provider.dart';
 import '../../domain/entities/file_info.dart';
 import '../../core/constants/api_constants.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'code_viewer_page.dart';
+import 'file_search_page.dart';
+import 'chat_page.dart';
 
 /// File browser page for navigating directory tree
 class FileBrowserPage extends StatefulWidget {
@@ -87,12 +89,87 @@ class _FileBrowserPageState extends State<FileBrowserPage> {
     }
   }
 
+  void _attachFileToChat(FileInfo file) {
+    // Navigate to chat page with file attachment
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ChatPage(
+          initialAttachment: file,
+        ),
+      ),
+    );
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Attached: ${file.name}')),
+    );
+  }
+
+  void _showFileOptions(FileInfo file) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.visibility),
+              title: const Text('View File'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CodeViewerPage(
+                      filePath: file.path,
+                      fileName: file.name,
+                    ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.attach_file),
+              title: const Text('Attach to Chat'),
+              onTap: () {
+                Navigator.pop(context);
+                _attachFileToChat(file);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.content_copy),
+              title: const Text('Copy Path'),
+              onTap: () {
+                Navigator.pop(context);
+                Clipboard.setData(ClipboardData(text: file.path));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Path copied to clipboard')),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Files'),
+        title: const Text('Files'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FileSearchPage(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => _loadFiles(_currentPath),
@@ -165,20 +242,17 @@ class _FileBrowserPageState extends State<FileBrowserPage> {
                       subtitle: file.size != null
                           ? Text(_formatSize(file.size!))
                           : null,
+                      trailing: !file.isDirectory
+                          ? IconButton(
+                              icon: const Icon(Icons.more_vert),
+                              onPressed: () => _showFileOptions(file),
+                            )
+                          : null,
                       onTap: () {
                         if (file.isDirectory) {
                           _navigateTo(file.path);
                         } else {
-                          // Navigate to code viewer
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => CodeViewerPage(
-      filePath: file.path,
-      fileName: file.name,
-    ),
-  ),
-);
+                          _showFileOptions(file);
                         }
                       },
                     );
