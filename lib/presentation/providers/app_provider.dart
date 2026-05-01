@@ -41,6 +41,7 @@ class AppProvider extends ChangeNotifier {
   // Selected model/provider state
   String? _selectedProviderId;
   String? _selectedModelId;
+  String? _serverVersion;
   ProvidersResponse? _providersResponse;
 
   // Getters
@@ -55,6 +56,7 @@ class AppProvider extends ChangeNotifier {
   String? get selectedProviderId => _selectedProviderId;
   String? get selectedModelId => _selectedModelId;
   ProvidersResponse? get providersResponse => _providersResponse;
+  String? get serverVersion => _serverVersion;
 
   /// 获取应用信息
   Future<void> getAppInfo() async {
@@ -80,6 +82,19 @@ class AppProvider extends ChangeNotifier {
 
   /// 检查服务器连接
   Future<void> checkConnection() async {
+    try {
+      // Try to get health status which includes version
+      final response = await _dioClient.get('/global/health');
+      if (response != null) {
+        if (response is Map) {
+          _serverVersion = response['version'] ?? response['Version'] ?? null;
+        }
+      }
+    } catch (_) {
+      // Version fetch failed, but continue with connection check
+    }
+    
+    //
     final result = await _checkConnection();
 
     result.fold(

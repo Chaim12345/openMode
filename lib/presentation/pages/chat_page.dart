@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../providers/chat_provider.dart';
 import 'server_settings_page.dart';
@@ -76,6 +79,38 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  Future<void> _forkSessionFromMessage(String messageId) async {
+    final chatProvider = context.read<ChatProvider>();
+    final appProvider = context.read<AppProvider>();
+    
+    try {
+      final currentSession = chatProvider.currentSession;
+      if (currentSession == null) return;
+      
+      final response = await http.post(
+        Uri.parse('${appProvider.serverUrl}/session/$currentSession/fork'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'from_message_id': messageId}),
+      );
+      
+      if (mounted && response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final newSessionId = data['session_id'];
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Session forked successfully')),
+        );
+        // Reload sessions to show the new fork
+        // TODO: Navigate to new session or refresh list
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fork: $e')),
+        );
+      }
+    }
+  }
+
   void _showMessageOptions(BuildContext context, dynamic message) {
     final chatProvider = context.read<ChatProvider>();
     showModalBottomSheet(
@@ -106,6 +141,15 @@ class _ChatPageState extends State<ChatPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Messages restored')),
                 );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.call_split),
+              title: const Text('Fork from here'),
+              subtitle: const Text('Create new session starting from this message'),
+              onTap: () {
+                Navigator.pop(context);
+                _forkSessionFromMessage(message.id);
               },
             ),
             ListTile(
