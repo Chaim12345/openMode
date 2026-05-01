@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/app_info.dart';
+import '../../domain/entities/provider.dart';
 import '../../domain/usecases/get_app_info.dart';
+import '../../domain/usecases/get_providers.dart';
 import '../../domain/usecases/check_connection.dart';
 import '../../domain/usecases/update_server_config.dart';
 import '../../core/constants/api_constants.dart';
@@ -13,14 +16,17 @@ class AppProvider extends ChangeNotifier {
   final GetAppInfo _getAppInfo;
   final CheckConnection _checkConnection;
   final UpdateServerConfig _updateServerConfig;
+  final GetProviders _getProviders;
 
   AppProvider({
     required GetAppInfo getAppInfo,
     required CheckConnection checkConnection,
     required UpdateServerConfig updateServerConfig,
+    required GetProviders getProviders,
   }) : _getAppInfo = getAppInfo,
        _checkConnection = checkConnection,
-       _updateServerConfig = updateServerConfig;
+       _updateServerConfig = updateServerConfig,
+       _getProviders = getProviders;
 
   // 状态
   AppStatus _status = AppStatus.initial;
@@ -29,6 +35,11 @@ class AppProvider extends ChangeNotifier {
   String _serverHost = ApiConstants.defaultHost;
   int _serverPort = ApiConstants.defaultPort;
   bool _isConnected = false;
+  
+  // Selected model/provider state
+  String? _selectedProviderId;
+  String? _selectedModelId;
+  ProvidersResponse? _providersResponse;
 
   // Getters
   AppStatus get status => _status;
@@ -38,6 +49,9 @@ class AppProvider extends ChangeNotifier {
   int get serverPort => _serverPort;
   bool get isConnected => _isConnected;
   String get serverUrl => 'http://$_serverHost:$_serverPort';
+  String? get selectedProviderId => _selectedProviderId;
+  String? get selectedModelId => _selectedModelId;
+  ProvidersResponse? get providersResponse => _providersResponse;
 
   /// 获取应用信息
   Future<void> getAppInfo() async {
@@ -126,5 +140,39 @@ class AppProvider extends ChangeNotifier {
 
   void _setStatus(AppStatus status) {
     _status = status;
+  }
+
+  /// 获取提供商列表
+  Future<ProvidersResponse?> getProviders() async {
+    try {
+      final result = await _getProviders();
+      return result.fold(
+        (failure) {
+          debugPrint('Failed to get providers: $failure');
+          return null;
+        },
+        (response) {
+          _providersResponse = response;
+          // Set default selection if not already set
+          if (_selectedProviderId == null && response.providers.isNotEmpty) {
+            final firstProvider = response.providers.first;
+            _selectedProviderId = firstProvider.id;
+            _selectedModelId = firstProvider.models.keys.first;
+          }
+          notifyListeners();
+          return response;
+        },
+      );
+    } catch (e) {
+      debugPrint('Error getting providers: $e');
+      return null;
+    }
+  }
+
+  /// 更新选中的模型
+  void updateSelectedModel(String providerId, String modelId) {
+    _selectedProviderId = providerId;
+    _selectedModelId = modelId;
+    notifyListeners();
   }
 }
