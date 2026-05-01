@@ -10,6 +10,17 @@ void main() {
     });
   });
 
+  group('MessageTime', () {
+    test('should create MessageTime', () {
+      final time = MessageTime(
+        created: 1234567890,
+        updated: 1234567890,
+      );
+      expect(time.created, 1234567890);
+      expect(time.updated, 1234567890);
+    });
+  });
+
   group('UserMessage', () {
     test('should create UserMessage', () {
       final time = MessageTime(

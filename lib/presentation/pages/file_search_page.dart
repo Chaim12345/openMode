@@ -109,7 +109,7 @@ class _FileSearchPageState extends State<FileSearchPage> {
                           ButtonSegment(
                             value: SearchType.text,
                             label: Text('Text'),
-                            icon: Icon(Icons.text_search),
+                            icon: Icon(Icons.search),
                           ),
                         ],
                         selected: {_searchType},
