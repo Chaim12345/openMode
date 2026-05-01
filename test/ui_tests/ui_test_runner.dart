@@ -1,13 +1,14 @@
-// These tests are disabled because they require AppProvider parameter
-// To run these tests, you need to provide a mock AppProvider
-
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+// Tests disabled - require AppProvider which needs dependency injection setup
+// To properly test these, you would need to mock GetAppInfo, CheckConnection,
+// UpdateServerConfig, GetProviders, and GetHealthStatus use cases
+
 void main() {
-  group('UI Tests (DISABLED - need AppProvider mock)', () {
-    test('placeholder test', () {
-      // This test suite requires AppProvider which needs to be mocked
-      // Skipping for now
+  group('UI Tests (DISABLED - require DI setup)', () {
+    test('placeholder', () {
+      // This test suite requires proper DI setup with mocked use cases
       expect(true, isTrue);
     });
   });
