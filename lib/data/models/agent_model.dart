@@ -1,5 +1,5 @@
+import 'package:json_annotation/json_annotation.dart';
 import '../../domain/entities/agent.dart';
-import 'json_serializable/json_serializable.dart';
 
 part 'agent_model.g.dart';
 
@@ -38,6 +38,7 @@ class AgentModel {
   }
 }
 
+@JsonSerializable()
 class AgentModelConfig {
   final String provider;
   final String model;
@@ -47,22 +48,13 @@ class AgentModelConfig {
     required this.model,
   });
 
-  factory AgentModelConfig.fromJson(Map<String, dynamic> json) {
-    return AgentModelConfig(
-      provider: json['provider'] ?? '',
-      model: json['model'] ?? '',
-    );
-  }
+  factory AgentModelConfig.fromJson(Map<String, dynamic> json) =>
+      _$AgentModelConfigFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'provider': provider,
-      'model': model,
-    };
-  }
+  Map<String, dynamic> toJson() => _$AgentModelConfigToJson(this);
 
-  AgentModel toDomain() {
-    return AgentModel(
+  domain.AgentModel toDomain() {
+    return domain.AgentModel(
       provider: provider,
       model: model,
     );

@@ -62,7 +62,7 @@ class DioClient {
         logPrint: (object) {
           // Print logs in debug mode only
           if (const bool.fromEnvironment('dart.vm.product') == false) {
-            debugPrint(object);
+            debugPrint(object.toString());
           }
         },
       ),

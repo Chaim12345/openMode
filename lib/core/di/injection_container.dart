@@ -99,6 +99,7 @@ Future<void> init() async {
       getAppInfo: sl(),
       checkConnection: sl(),
       updateServerConfig: sl(),
+    getProviders: sl(),
     ),
   );
 

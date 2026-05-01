@@ -193,4 +193,51 @@ class AppProvider extends ChangeNotifier {
     _selectedModelId = modelId;
     notifyListeners();
   }
+
+
+  /// Load saved theme mode from SharedPreferences
+  Future<void> loadThemeMode() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final themeModeString = prefs.getString('theme_mode');
+      if (themeModeString != null) {
+        switch (themeModeString) {
+          case 'light':
+            _themeMode = ThemeMode.light;
+            break;
+          case 'dark':
+            _themeMode = ThemeMode.dark;
+            break;
+          case 'system':
+            _themeMode = ThemeMode.system;
+            break;
+        }
+      }
+    } catch (e) {
+      debugPrint('Failed to load theme mode: $e');
+    }
+    notifyListeners();
+  }
+
+  /// Save theme mode to SharedPreferences
+  Future<void> saveThemeMode(ThemeMode mode) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String themeModeString;
+      switch (mode) {
+        case ThemeMode.light:
+          themeModeString = 'light';
+          break;
+        case ThemeMode.dark:
+          themeModeString = 'dark';
+          break;
+        case ThemeMode.system:
+          themeModeString = 'system';
+          break;
+      }
+      await prefs.setString('theme_mode', themeModeString);
+    } catch (e) {
+      debugPrint('Failed to save theme mode: $e');
+    }
+  }
 }

@@ -15,11 +15,14 @@ class ForkSession {
     try {
       final response = await dioClient.post(
         '/session/$sessionId/fork',
-        {'from_message_id': fromMessageId},
+        data: {'from_message_id': fromMessageId},
       );
 
-      if (response is Map) {
-        return Right(response);
+      // Extract data from Response object
+      final responseData = response.data;
+      
+      if (responseData is Map<String, dynamic>) {
+        return Right(responseData);
       }
 
       return const Left(ServerFailure('Invalid response format'));
