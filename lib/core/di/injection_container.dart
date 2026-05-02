@@ -115,7 +115,6 @@ Future<void> init() async {
       createChatSession: sl(),
       getChatMessages: sl(),
       getProviders: sl(),
-      getHealthStatus: sl(),
       deleteChatSession: sl(),
       updateChatSession: sl(),
       shareChatSession: sl(),

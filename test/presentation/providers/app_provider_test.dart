@@ -1,6 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:open_mode/presentation/providers/app_provider.dart';
-import 'package:open_mode/presentation/providers/chat_provider.dart';
 
 void main() {
   group('AppProvider', () {
