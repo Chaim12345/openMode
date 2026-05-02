@@ -15,7 +15,13 @@ class DioClient {
         connectTimeout: ApiConstants.connectTimeout,
         receiveTimeout: ApiConstants.receiveTimeout,
         sendTimeout: ApiConstants.sendTimeout,
-        headers: {ApiConstants.contentType: ApiConstants.applicationJson},
+        headers: {
+          ApiConstants.contentType: ApiConstants.applicationJson,
+          // CORS headers for Android (ignored by most servers but helps with some)
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+          'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Requested-With',
+        },
       ),
     );
 

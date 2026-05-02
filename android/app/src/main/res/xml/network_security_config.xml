@@ -8,6 +8,10 @@
         <domain includeSubdomains="false">192.168.1.1</domain> <!-- 常用局域网地址范围 -->
         <domain includeSubdomains="true">192.168.0.0</domain>
         <domain includeSubdomains="true">10.0.0.0</domain>
+        <!-- OpenCode 远程服务器 (HTTP) -->
+        <domain includeSubdomains="true">137.131.63.155</domain>
+        <domain includeSubdomains="true">work-1-tsdobgsnmbliqqgv.prod-runtime.all-hands.dev</domain>
+        <domain includeSubdomains="true">work-2-tsdobgsnmbliqqgv.prod-runtime.all-hands.dev</domain>
     </domain-config>
     
     <!-- 对于生产环境，建议仅允许 HTTPS -->
