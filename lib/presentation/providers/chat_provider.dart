@@ -725,10 +725,8 @@ class ChatProvider extends ChangeNotifier {
     final projectId = projectProvider.currentProjectId;
 
     final result = await forkSession(
-      ForkSessionParams(
-        projectId: projectId,
-        sessionId: _currentSession!.id,
-      ),
+      projectId: projectId,
+      sessionId: _currentSession!.id,
     );
 
     result.fold(

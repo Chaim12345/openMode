@@ -10,7 +10,7 @@ import '../../core/network/dio_client.dart';
 
 /// Server settings page
 class ServerSettingsPage extends StatefulWidget {
-  const ServerSettingsPage({Key? key}) : super(key: key);
+  const ServerSettingsPage({super.key});
 
   @override
   State<ServerSettingsPage> createState() => _ServerSettingsPageState();

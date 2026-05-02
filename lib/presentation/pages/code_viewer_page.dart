@@ -12,10 +12,10 @@ class CodeViewerPage extends StatefulWidget {
   final String fileName;
 
   const CodeViewerPage({
-    Key? key,
+    super.key,
     required this.filePath,
     required this.fileName,
-  }) : super(key: key);
+  });
 
   @override
   State<CodeViewerPage> createState() => _CodeViewerPageState();

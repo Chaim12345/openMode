@@ -10,7 +10,7 @@ import '../../core/di/injection_container.dart';
 
 /// Home page
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: Row(
           children: [
@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.surfaceVariant.withOpacity(0.5),
+                    ).colorScheme.surfaceContainerHighest.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: Theme.of(
@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
           radius: 1.5,
           colors: [
             Theme.of(context).colorScheme.primary.withOpacity(0.05),
-            Theme.of(context).colorScheme.background,
+            Theme.of(context).colorScheme.surface,
           ],
         ),
       ),
@@ -235,10 +235,10 @@ class _HomePageState extends State<HomePage> {
                     colors: [
                       Theme.of(
                         context,
-                      ).colorScheme.onBackground.withOpacity(0.1),
+                      ).colorScheme.onSurface.withOpacity(0.1),
                       Theme.of(
                         context,
-                      ).colorScheme.onBackground.withOpacity(0.05),
+                      ).colorScheme.onSurface.withOpacity(0.05),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),
@@ -334,7 +334,7 @@ class _HomePageState extends State<HomePage> {
           radius: 1.5,
           colors: [
             Theme.of(context).colorScheme.tertiary.withOpacity(0.05),
-            Theme.of(context).colorScheme.background,
+            Theme.of(context).colorScheme.surface,
           ],
         ),
       ),
@@ -428,7 +428,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: BoxDecoration(
                             color: Theme.of(
                               context,
-                            ).colorScheme.surfaceVariant.withOpacity(0.3),
+                            ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(
@@ -575,8 +575,8 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
-            Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.1),
+            Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

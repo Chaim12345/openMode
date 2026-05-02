@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../providers/app_provider.dart';
-import '../../core/constants/api_constants.dart';
 
 /// Session diff viewer - shows file changes
 class SessionDiffPage extends StatefulWidget {
@@ -11,10 +10,10 @@ class SessionDiffPage extends StatefulWidget {
   final String? messageId;
 
   const SessionDiffPage({
-    Key? key,
+    super.key,
     required this.sessionId,
     this.messageId,
-  }) : super(key: key);
+  });
 
   @override
   State<SessionDiffPage> createState() => _SessionDiffPageState();

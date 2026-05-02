@@ -6,7 +6,7 @@ import '../../core/constants/app_constants.dart';
 
 /// Model/Provider selection page
 class ModelPickerPage extends StatefulWidget {
-  const ModelPickerPage({Key? key}) : super(key: key);
+  const ModelPickerPage({super.key});
 
   @override
   State<ModelPickerPage> createState() => _ModelPickerPageState();

@@ -21,10 +21,10 @@ abstract class Message extends Equatable {
 /// 用户消息
 class UserMessage extends Message {
   const UserMessage({
-    required String id,
-    required String sessionId,
-    required MessageTime time,
-  }) : super(id: id, sessionId: sessionId, role: MessageRole.user, time: time);
+    required super.id,
+    required super.sessionId,
+    required super.time,
+  }) : super(role: MessageRole.user);
 
   @override
   List<Object> get props => [id, sessionId, role, time];
@@ -43,9 +43,9 @@ class AssistantMessage extends Message {
   final MessageTokens tokens;
 
   const AssistantMessage({
-    required String id,
-    required String sessionId,
-    required MessageTime time,
+    required super.id,
+    required super.sessionId,
+    required super.time,
     this.error,
     required this.system,
     required this.modelId,
@@ -56,10 +56,7 @@ class AssistantMessage extends Message {
     required this.cost,
     required this.tokens,
   }) : super(
-         id: id,
-         sessionId: sessionId,
          role: MessageRole.assistant,
-         time: time,
        );
 
   @override

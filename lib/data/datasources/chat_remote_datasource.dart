@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import '../models/chat_message_model.dart';
 import '../models/chat_session_model.dart';

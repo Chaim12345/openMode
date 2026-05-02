@@ -71,6 +71,7 @@ dependencies:
   # Dependency injection
   get_it: ^7.6.4
 
+  http: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

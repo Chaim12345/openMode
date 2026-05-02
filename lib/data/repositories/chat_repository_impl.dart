@@ -314,7 +314,7 @@ class ChatRepositoryImpl implements ChatRepository {
   Future<Either<Failure, ChatSession>> forkSession(String projectId, String sessionId, {String? directory}) async {
     try {
       final session = await remoteDataSource.forkSession(projectId, sessionId, directory: directory);
-      return Right(session.toEntity());
+      return Right(session.toDomain());
     } on NotFoundException {
       return const Left(NotFoundFailure('Session not found'));
     } on ServerException {

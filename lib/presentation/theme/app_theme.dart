@@ -58,10 +58,10 @@ class AppTheme {
         foregroundColor: Colors.black87,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+          borderRadius: BorderRadius.all(Radius.circular(AppConstants.borderRadius)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -135,12 +135,9 @@ class AppTheme {
         errorContainer: Color(0xFF7F1D1D),
         onErrorContainer: Color(0xFFFECDD3),
 
-        background: backgroundDark,
-        onBackground: textPrimaryDark,
-
         surface: surfaceDark,
         onSurface: textPrimaryDark,
-        surfaceVariant: surfaceVariantDark,
+        surfaceContainerHighest: surfaceVariantDark,
         onSurfaceVariant: textSecondaryDark,
 
         outline: borderDark,
@@ -168,13 +165,13 @@ class AppTheme {
       ),
 
       // 卡片主题 - 现代化设计
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         color: cardDark,
-        shadowColor: Colors.black.withOpacity(0.3),
+        shadowColor: Colors.black.withValues(alpha: 0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-          side: BorderSide(color: borderDark.withOpacity(0.2), width: 1),
+          side: BorderSide(color: borderDark.withValues(alpha: 0.2), width: 1),
         ),
         margin: const EdgeInsets.symmetric(
           horizontal: AppConstants.smallPadding,
@@ -188,7 +185,7 @@ class AppTheme {
           elevation: 0,
           backgroundColor: primaryColor,
           foregroundColor: Colors.white,
-          shadowColor: primaryColor.withOpacity(0.3),
+          shadowColor: primaryColor.withValues(alpha: 0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppConstants.borderRadius),
           ),
@@ -227,13 +224,13 @@ class AppTheme {
         // 默认边框
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-          borderSide: BorderSide(color: borderDark.withOpacity(0.3)),
+          borderSide: BorderSide(color: borderDark.withValues(alpha: 0.3)),
         ),
 
         // 启用状态边框
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-          borderSide: BorderSide(color: borderDark.withOpacity(0.3)),
+          borderSide: BorderSide(color: borderDark.withValues(alpha: 0.3)),
         ),
 
         // 聚焦状态边框
@@ -270,7 +267,7 @@ class AppTheme {
       ),
 
       // 对话框主题
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: cardDark,
         elevation: 24,
         shape: RoundedRectangleBorder(
@@ -328,8 +325,8 @@ class AppTheme {
       // Chip 主题
       chipTheme: ChipThemeData(
         backgroundColor: surfaceVariantDark,
-        selectedColor: primaryColor.withOpacity(0.2),
-        disabledColor: surfaceVariantDark.withOpacity(0.5),
+        selectedColor: primaryColor.withValues(alpha: 0.2),
+        disabledColor: surfaceVariantDark.withValues(alpha: 0.5),
         labelStyle: const TextStyle(color: textPrimaryDark),
         secondaryLabelStyle: const TextStyle(color: textSecondaryDark),
         brightness: Brightness.dark,
@@ -446,7 +443,7 @@ class AppTheme {
         end: end,
         colors:
             colors ??
-            [primaryColor.withOpacity(0.1), accentColor.withOpacity(0.1)],
+            [primaryColor.withValues(alpha: 0.1), accentColor.withValues(alpha: 0.1)],
       ),
       borderRadius: BorderRadius.circular(borderRadius),
       border: borderColor != null
@@ -464,7 +461,7 @@ class AppTheme {
   }) {
     return [
       BoxShadow(
-        color: (color ?? Colors.black).withOpacity(0.1),
+        color: (color ?? Colors.black).withValues(alpha: 0.1),
         blurRadius: blurRadius,
         spreadRadius: spreadRadius,
         offset: offset,

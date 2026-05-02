@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 /// VCS/Git info display widget
 class VcsInfoWidget extends StatefulWidget {
-  const VcsInfoWidget({Key? key}) : super(key: key);
+  const VcsInfoWidget({super.key});
 
   @override
   State<VcsInfoWidget> createState() => _VcsInfoWidgetState();

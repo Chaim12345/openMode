@@ -109,7 +109,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
-                  ).colorScheme.surfaceVariant.withOpacity(0.5),
+                  ).colorScheme.surfaceContainerHighest.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Theme.of(
@@ -152,10 +152,10 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                       colors: [
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceVariant.withOpacity(0.3),
+                        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceVariant.withOpacity(0.1),
+                        ).colorScheme.surfaceContainerHighest.withOpacity(0.1),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -255,7 +255,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                   color: (!_isComposing || !widget.enabled)
                       ? Theme.of(
                           context,
-                        ).colorScheme.surfaceVariant.withOpacity(0.5)
+                        ).colorScheme.surfaceContainerHighest.withOpacity(0.5)
                       : null,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(

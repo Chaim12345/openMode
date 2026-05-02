@@ -21,19 +21,15 @@ class SessionModel extends Session {
   final SessionRevertModel? revert;
 
   const SessionModel({
-    required String id,
-    String? parentId,
-    required String title,
-    required String version,
+    required super.id,
+    super.parentId,
+    required super.title,
+    required super.version,
     required this.time,
     this.share,
     this.revert,
   }) : parentIdField = parentId,
        super(
-         id: id,
-         parentId: parentId,
-         title: title,
-         version: version,
          time: time,
          share: share,
          revert: revert,
@@ -57,8 +53,7 @@ class SessionModel extends Session {
 
 @JsonSerializable()
 class SessionTimeModel extends SessionTime {
-  const SessionTimeModel({required int created, required int updated})
-    : super(created: created, updated: updated);
+  const SessionTimeModel({required super.created, required super.updated});
 
   factory SessionTimeModel.fromJson(Map<String, dynamic> json) =>
       _$SessionTimeModelFromJson(json);
@@ -68,7 +63,7 @@ class SessionTimeModel extends SessionTime {
 
 @JsonSerializable()
 class SessionShareModel extends SessionShare {
-  const SessionShareModel({required String url}) : super(url: url);
+  const SessionShareModel({required super.url});
 
   factory SessionShareModel.fromJson(Map<String, dynamic> json) =>
       _$SessionShareModelFromJson(json);
@@ -84,18 +79,12 @@ class SessionRevertModel extends SessionRevert {
   final String? partIdField;
 
   const SessionRevertModel({
-    required String messageId,
-    String? partId,
-    String? snapshot,
-    String? diff,
+    required super.messageId,
+    super.partId,
+    super.snapshot,
+    super.diff,
   }) : messageIdField = messageId,
-       partIdField = partId,
-       super(
-         messageId: messageId,
-         partId: partId,
-         snapshot: snapshot,
-         diff: diff,
-       );
+       partIdField = partId;
 
   factory SessionRevertModel.fromJson(Map<String, dynamic> json) =>
       _$SessionRevertModelFromJson(json);

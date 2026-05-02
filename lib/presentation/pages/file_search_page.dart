@@ -9,7 +9,7 @@ import 'code_viewer_page.dart';
 
 /// File search page - search by filename or text pattern
 class FileSearchPage extends StatefulWidget {
-  const FileSearchPage({Key? key}) : super(key: key);
+  const FileSearchPage({super.key});
 
   @override
   State<FileSearchPage> createState() => _FileSearchPageState();

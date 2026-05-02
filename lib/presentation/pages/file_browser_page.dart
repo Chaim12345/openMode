@@ -12,7 +12,7 @@ import 'chat_page.dart';
 
 /// File browser page for navigating directory tree
 class FileBrowserPage extends StatefulWidget {
-  const FileBrowserPage({Key? key}) : super(key: key);
+  const FileBrowserPage({super.key});
 
   @override
   State<FileBrowserPage> createState() => _FileBrowserPageState();

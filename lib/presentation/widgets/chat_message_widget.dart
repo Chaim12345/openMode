@@ -81,7 +81,7 @@ class ChatMessageWidget extends StatelessWidget {
                       ).colorScheme.primaryContainer.withOpacity(0.1)
                     : Theme.of(
                         context,
-                      ).colorScheme.surfaceVariant.withOpacity(0.5),
+                      ).colorScheme.surfaceContainerHighest.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(16).copyWith(
                   topLeft: isUser
                       ? const Radius.circular(16)
@@ -246,10 +246,10 @@ class ChatMessageWidget extends StatelessWidget {
               p: Theme.of(context).textTheme.bodyMedium,
               code: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontFamily: 'monospace',
-                backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
               ),
               codeblockDecoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -290,7 +290,7 @@ class ChatMessageWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Theme.of(context).dividerColor),
       ),
@@ -338,7 +338,7 @@ class ChatMessageWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Theme.of(context).dividerColor),
       ),

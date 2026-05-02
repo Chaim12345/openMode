@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../providers/app_provider.dart';
 import '../providers/chat_provider.dart';
-import 'server_settings_page.dart';
 import 'settings_page.dart';
 
 import '../widgets/chat_message_widget.dart';
@@ -212,7 +210,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: Row(
           children: [
@@ -357,10 +355,10 @@ class _ChatPageState extends State<ChatPage> {
                       colors: [
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceVariant.withOpacity(0.3),
+                        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceVariant.withOpacity(0.1),
+                        ).colorScheme.surfaceContainerHighest.withOpacity(0.1),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,

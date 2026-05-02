@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/app_provider.dart';
 import '../../domain/entities/agent.dart';
 
 /// Agent selector widget
 class AgentSelector extends StatefulWidget {
   const AgentSelector({
-    Key? key,
+    super.key,
     this.onAgentSelected,
-  }) : super(key: key);
+  });
 
   final Function(String)? onAgentSelected;
 

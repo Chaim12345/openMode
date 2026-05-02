@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/app_info.dart';
@@ -199,25 +198,10 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
-  /// 更新选中的模型
+  /// Update selected model
   void updateSelectedModel(String providerId, String modelId) {
     _selectedProviderId = providerId;
     _selectedModelId = modelId;
-    notifyListeners();
-  }
-
-  /// Fetch server health status
-  Future<void> fetchHealthStatus() async {
-    final result = await _getHealthStatus();
-    result.fold(
-      (failure) {
-        debugPrint('Failed to fetch health status: $failure');
-      },
-      (healthStatus) {
-        _healthStatus = healthStatus;
-        _serverVersion = healthStatus.version;
-      },
-    );
     notifyListeners();
   }
 

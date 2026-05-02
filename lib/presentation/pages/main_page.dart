@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/app_provider.dart';
 import '../providers/chat_provider.dart';
-import '../providers/project_provider.dart';
 import 'chat_page.dart';
 import 'settings_page.dart';
 import 'file_browser_page.dart';
-import '../../core/constants/app_constants.dart';
 import '../../core/di/injection_container.dart';
 
 /// Main page with bottom navigation
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();

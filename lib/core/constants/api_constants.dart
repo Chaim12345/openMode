@@ -1,7 +1,7 @@
 /// API相关常量定义
 class ApiConstants {
-  // 默认服务器配置
-  static const String defaultHost = '127.0.0.1';
+  // 默认服务器配置 - Updated for remote testing
+  static const String defaultHost = '137.131.63.155';
   static const int defaultPort = 4096;
   static const String defaultBaseUrl = 'http://$defaultHost:$defaultPort';
 
