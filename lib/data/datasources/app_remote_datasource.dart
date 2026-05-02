@@ -79,32 +79,14 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
       final queryParams = directory != null ? {'directory': directory} : <String, dynamic>{};
       final response = await dio.get('/provider', queryParameters: queryParams);
       debugPrint('Providers API 响应: ${response.data}');
-      return ProvidersResponseModel.fromJson(response.data);
+      // Use OpenCode API format
+      return ProvidersResponseModel.fromOpenCodeApi(response.data as Map<String, dynamic>);
     } catch (e) {
       debugPrint('解析提供商响应时出错: $e');
-      // 返回一个最小的备用响应
-      return ProvidersResponseModel(
-        providers: [
-          ProviderModel(
-            id: 'moonshotai-cn',
-            name: 'Moonshot AI (China)',
-            env: const ['MOONSHOT_API_KEY'],
-            models: {
-              'kimi-k2-turbo-preview': ModelModel(
-                id: 'kimi-k2-turbo-preview',
-                name: 'Kimi K2 Turbo',
-                releaseDate: '2025-07-14',
-                attachment: false,
-                reasoning: false,
-                temperature: true,
-                toolCall: true,
-                cost: ModelCostModel(input: 2.4, output: 10.0),
-                limit: ModelLimitModel(context: 131072, output: 16384),
-              ),
-            },
-          ),
-        ],
-        defaultModels: {'moonshotai-cn': 'kimi-k2-turbo-preview'},
+      // Return empty response on error
+      return const ProvidersResponseModel(
+        providers: [],
+        defaultModels: {},
       );
     }
   }

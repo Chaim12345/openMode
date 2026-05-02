@@ -3,7 +3,7 @@ import '../../domain/entities/chat_session.dart';
 
 part 'chat_session_model.g.dart';
 
-/// 聊天会话模型
+/// Chat message creation input
 @JsonSerializable()
 class ChatSessionModel {
   const ChatSessionModel({
@@ -233,30 +233,20 @@ class ChatInputPartModel {
 }
 
 /// 会话创建输入模型
-@JsonSerializable()
 class SessionCreateInputModel {
   const SessionCreateInputModel({
     this.parentId,
     this.title,
   });
 
-  @JsonKey(name: 'parentID', includeIfNull: false)
+  @JsonKey(name: 'parentID')
   final String? parentId;
-  @JsonKey(includeIfNull: false)
   final String? title;
 
-  factory SessionCreateInputModel.fromJson(Map<String, dynamic> json) =>
-      _$SessionCreateInputModelFromJson(json);
-
-  // 手动实现 toJson 以避免向后端发送 null 字段
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    if (parentId != null) {
-      map['parentID'] = parentId;
-    }
-    if (title != null) {
-      map['title'] = title;
-    }
+    if (parentId != null) map['parentID'] = parentId;
+    if (title != null) map['title'] = title;
     return map;
   }
 
@@ -269,21 +259,14 @@ class SessionCreateInputModel {
 }
 
 /// 会话更新输入模型
-@JsonSerializable()
 class SessionUpdateInputModel {
   const SessionUpdateInputModel({this.title});
 
   final String? title;
 
-  factory SessionUpdateInputModel.fromJson(Map<String, dynamic> json) =>
-      _$SessionUpdateInputModelFromJson(json);
-
-  // 同样避免发送空字段
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    if (title != null) {
-      map['title'] = title;
-    }
+    if (title != null) map['title'] = title;
     return map;
   }
 

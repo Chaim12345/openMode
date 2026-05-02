@@ -7,6 +7,7 @@ class Provider extends Equatable {
   final List<String> env;
   final String? api;
   final String? npm;
+  final String? source;
   final Map<String, Model> models;
 
   const Provider({
@@ -15,11 +16,12 @@ class Provider extends Equatable {
     required this.env,
     this.api,
     this.npm,
+    this.source,
     required this.models,
   });
 
   @override
-  List<Object?> get props => [id, name, env, api, npm, models];
+  List<Object?> get props => [id, name, env, api, npm, source, models];
 }
 
 /// AI模型实体
@@ -38,6 +40,9 @@ class Model extends Equatable {
   final String? lastUpdated;
   final Map<String, dynamic>? modalities;
   final bool? openWeights;
+  final String? family;
+  final String? status;
+  final List<String>? variants;
 
   const Model({
     required this.id,
@@ -54,6 +59,9 @@ class Model extends Equatable {
     this.lastUpdated,
     this.modalities,
     this.openWeights,
+    this.family,
+    this.status,
+    this.variants,
   });
 
   @override
@@ -72,6 +80,9 @@ class Model extends Equatable {
     lastUpdated,
     modalities,
     openWeights,
+    family,
+    status,
+    variants,
   ];
 }
 

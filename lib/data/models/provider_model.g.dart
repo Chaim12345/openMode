@@ -22,6 +22,22 @@ Map<String, dynamic> _$ProvidersResponseModelToJson(
   'default': instance.defaultModels,
 };
 
+ModelCapabilities _$ModelCapabilitiesFromJson(Map<String, dynamic> json) =>
+    ModelCapabilities(
+      attachment: json['attachment'] as bool? ?? false,
+      reasoning: json['reasoning'] as bool? ?? false,
+      temperature: json['temperature'] as bool? ?? true,
+      toolCall: json['toolCall'] as bool? ?? false,
+    );
+
+Map<String, dynamic> _$ModelCapabilitiesToJson(ModelCapabilities instance) =>
+    <String, dynamic>{
+      'attachment': instance.attachment,
+      'reasoning': instance.reasoning,
+      'temperature': instance.temperature,
+      'toolCall': instance.toolCall,
+    };
+
 ProviderModel _$ProviderModelFromJson(Map<String, dynamic> json) =>
     ProviderModel(
       id: json['id'] as String,
@@ -29,6 +45,7 @@ ProviderModel _$ProviderModelFromJson(Map<String, dynamic> json) =>
       env: (json['env'] as List<dynamic>).map((e) => e as String).toList(),
       api: json['api'] as String?,
       npm: json['npm'] as String?,
+      source: json['source'] as String?,
       models: (json['models'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, ModelModel.fromJson(e as Map<String, dynamic>)),
       ),
@@ -41,24 +58,33 @@ Map<String, dynamic> _$ProviderModelToJson(ProviderModel instance) =>
       'env': instance.env,
       'api': instance.api,
       'npm': instance.npm,
+      'source': instance.source,
       'models': instance.models,
     };
 
 ModelModel _$ModelModelFromJson(Map<String, dynamic> json) => ModelModel(
   id: json['id'] as String,
   name: json['name'] as String,
-  releaseDate: json['release_date'] as String,
-  attachment: json['attachment'] as bool,
-  reasoning: json['reasoning'] as bool,
-  temperature: json['temperature'] as bool,
-  toolCall: json['tool_call'] as bool,
+  releaseDate: json['release_date'] as String?,
+  attachment: json['attachment'] as bool?,
+  reasoning: json['reasoning'] as bool?,
+  temperature: json['temperature'] as bool?,
+  toolCall: json['tool_call'] as bool?,
+  capabilities: json['capabilities'] == null
+      ? null
+      : ModelCapabilities.fromJson(
+          json['capabilities'] as Map<String, dynamic>,
+        ),
   cost: ModelCostModel.fromJson(json['cost'] as Map<String, dynamic>),
   limit: ModelLimitModel.fromJson(json['limit'] as Map<String, dynamic>),
-  options: json['options'] as Map<String, dynamic>? ?? const {},
+  options: json['options'] as Map<String, dynamic>?,
   knowledge: json['knowledge'] as String?,
   lastUpdated: json['last_updated'] as String?,
   modalities: json['modalities'] as Map<String, dynamic>?,
   openWeights: json['open_weights'] as bool?,
+  family: json['family'] as String?,
+  status: json['status'] as String?,
+  variants: json['variants'] as List<dynamic>?,
 );
 
 Map<String, dynamic> _$ModelModelToJson(ModelModel instance) =>
@@ -70,6 +96,7 @@ Map<String, dynamic> _$ModelModelToJson(ModelModel instance) =>
       'reasoning': instance.reasoning,
       'temperature': instance.temperature,
       'tool_call': instance.toolCall,
+      'capabilities': instance.capabilities,
       'cost': instance.cost,
       'limit': instance.limit,
       'options': instance.options,
@@ -77,6 +104,9 @@ Map<String, dynamic> _$ModelModelToJson(ModelModel instance) =>
       'last_updated': instance.lastUpdated,
       'modalities': instance.modalities,
       'open_weights': instance.openWeights,
+      'family': instance.family,
+      'status': instance.status,
+      'variants': instance.variants,
     };
 
 ModelCostModel _$ModelCostModelFromJson(Map<String, dynamic> json) =>

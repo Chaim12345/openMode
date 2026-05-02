@@ -71,7 +71,7 @@ When all issues are resolved:
 - ✅ Widget tests run
 - ✅ Integration tests run
 - ✅ Web build succeeds
-- ✅ Android APK builds
+- ✅ Android  o still n builds
 - ✅ Deployment to GitHub Pages works
 
 ## 🔄 Automation
