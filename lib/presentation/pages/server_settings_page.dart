@@ -24,6 +24,15 @@ class _ServerSettingsPageState extends State<ServerSettingsPage> {
   final _basicPasswordController = TextEditingController();
   bool _basicEnabled = false;
   bool _hasCheckedConnection = false; // Only show status after explicit check/test
+  
+  /// Preset server hosts for quick selection
+  static const List<Map<String, dynamic>> _presetHosts = [
+    {'host': '137.131.63.155', 'port': 4096, 'label': 'OpenCode Remote (137.131.63.155:4096)'},
+    {'host': '10.60.0.1', 'port': 4096, 'label': 'Local/OpenHands Host (10.60.0.1:4096)'},
+    {'host': 'localhost', 'port': 4096, 'label': 'Localhost (localhost:4096)'},
+  ];
+  
+  String? _selectedPreset;
 
   @override
   void initState() {
@@ -45,12 +54,28 @@ class _ServerSettingsPageState extends State<ServerSettingsPage> {
         _portController.text = savedPort.toString();
         // Keep provider state consistent so other parts reflect the same values
         appProvider.setServerConfig(savedHost, savedPort);
+        // Set preset selection if it matches a known host
+        for (var preset in _presetHosts) {
+          if (preset['host'] == savedHost && preset['port'] == savedPort) {
+            _selectedPreset = preset['host'];
+            break;
+          }
+        }
       }
       if (mounted) {
         _basicEnabled = savedBasicEnabled ?? false;
         _basicUsernameController.text = savedUsername ?? '';
         _basicPasswordController.text = savedPassword ?? '';
         setState(() {});
+      }
+    });
+    
+    // Listen to host controller changes to clear preset when manually editing
+    _hostController.addListener(() {
+      if (_selectedPreset != null && _hostController.text != _selectedPreset) {
+        setState(() {
+          _selectedPreset = null;
+        });
       }
     });
   }
@@ -171,6 +196,39 @@ class _ServerSettingsPageState extends State<ServerSettingsPage> {
                         'Server Configuration',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
+                      const SizedBox(height: AppConstants.defaultPadding),
+                      
+                      // Preset server selection dropdown
+                      DropdownButtonFormField<String>(
+                        // ignore: deprecated_member_use
+                        value: _selectedPreset,
+                        decoration: const InputDecoration(
+                          labelText: 'Quick Select Server',
+                          prefixIcon: Icon(Icons.cloud),
+                        ),
+                        items: _presetHosts.map((preset) {
+                          return DropdownMenuItem<String>(
+                            value: preset['host'] as String,
+                            child: Text(preset['label'] as String),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedPreset = value;
+                            });
+                            // Find matching preset and update controllers
+                            for (var preset in _presetHosts) {
+                              if (preset['host'] == value) {
+                                _hostController.text = preset['host'] as String;
+                                _portController.text = preset['port'].toString();
+                                break;
+                              }
+                            }
+                          }
+                        },
+                      ),
+                      
                       const SizedBox(height: AppConstants.defaultPadding),
 
                       // Host address input
