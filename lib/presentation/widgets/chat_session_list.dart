@@ -96,7 +96,7 @@ class ChatSessionList extends StatelessWidget {
                       color: isSelected
                           ? Theme.of(
                               context,
-                            ).colorScheme.onPrimaryContainer.withOpacity(0.8)
+                            ).colorScheme.onPrimaryContainer.withValues(alpha: 0.8)
                           : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     maxLines: 2,
@@ -111,7 +111,7 @@ class ChatSessionList extends StatelessWidget {
                         color: isSelected
                             ? Theme.of(
                                 context,
-                              ).colorScheme.onPrimaryContainer.withOpacity(0.6)
+                              ).colorScheme.onPrimaryContainer.withValues(alpha: 0.6)
                             : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
@@ -123,7 +123,7 @@ class ChatSessionList extends StatelessWidget {
                         color: isSelected
                             ? Theme.of(
                                 context,
-                              ).colorScheme.onPrimaryContainer.withOpacity(0.6)
+                              ).colorScheme.onPrimaryContainer.withValues(alpha: 0.6)
                             : Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ],

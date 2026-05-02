@@ -35,8 +35,8 @@ class AppRemoteDataSourceImpl implements AppRemoteDataSource {
     // Fetch path info
     final pathResp = await dio.get('/path', queryParameters: queryParams);
 
-    // Fetch config info (optional for future use)
-    final configResp = await dio.get('/config', queryParameters: queryParams);
+    // Fetch config info (optional for future use) - ignore response for now
+    await dio.get('/config', queryParameters: queryParams);
 
     final Map<String, dynamic> pathJson = pathResp.data as Map<String, dynamic>;
 

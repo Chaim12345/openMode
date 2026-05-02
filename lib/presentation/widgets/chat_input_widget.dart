@@ -81,19 +81,19 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Theme.of(context).colorScheme.surface.withOpacity(0.8),
+            Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
             Theme.of(context).colorScheme.surface,
           ],
         ),
         border: Border(
           top: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -109,12 +109,12 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
-                  ).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Theme.of(
                       context,
-                    ).colorScheme.outline.withOpacity(0.2),
+                    ).colorScheme.outline.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Material(
@@ -130,7 +130,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                             ? Theme.of(context).colorScheme.primary
                             : Theme.of(
                                 context,
-                              ).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                         size: 20,
                       ),
                     ),
@@ -152,10 +152,10 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                       colors: [
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceContainerHighest.withOpacity(0.1),
+                        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -165,10 +165,10 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                       color: _focusNode.hasFocus
                           ? Theme.of(
                               context,
-                            ).colorScheme.primary.withOpacity(0.5)
+                            ).colorScheme.primary.withValues(alpha: 0.5)
                           : Theme.of(
                               context,
-                            ).colorScheme.outline.withOpacity(0.2),
+                            ).colorScheme.outline.withValues(alpha: 0.2),
                       width: 1.5,
                     ),
                     boxShadow: _focusNode.hasFocus
@@ -176,7 +176,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                             BoxShadow(
                               color: Theme.of(
                                 context,
-                              ).colorScheme.primary.withOpacity(0.1),
+                              ).colorScheme.primary.withValues(alpha: 0.1),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
@@ -198,7 +198,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                       hintStyle: TextStyle(
                         color: Theme.of(
                           context,
-                        ).colorScheme.onSurfaceVariant.withOpacity(0.6),
+                        ).colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
                       ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
@@ -255,7 +255,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                   color: (!_isComposing || !widget.enabled)
                       ? Theme.of(
                           context,
-                        ).colorScheme.surfaceContainerHighest.withOpacity(0.5)
+                        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
                       : null,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
@@ -263,14 +263,14 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                         ? Colors.transparent
                         : Theme.of(
                             context,
-                          ).colorScheme.outline.withOpacity(0.2),
+                          ).colorScheme.outline.withValues(alpha: 0.2),
                   ),
                   boxShadow: (_isComposing && widget.enabled)
                       ? [
                           BoxShadow(
                             color: Theme.of(
                               context,
-                            ).colorScheme.primary.withOpacity(0.3),
+                            ).colorScheme.primary.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -295,7 +295,7 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
                               ? Colors.white
                               : Theme.of(
                                   context,
-                                ).colorScheme.onSurfaceVariant.withOpacity(0.5),
+                                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                           size: 20,
                         ),
                       ),

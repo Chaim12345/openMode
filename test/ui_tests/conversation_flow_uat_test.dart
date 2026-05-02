@@ -893,7 +893,7 @@ void main() {
         );
         await tester.pumpAndSettle();
         
-        final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+        // scaffold widget used for theme verification
         final context = tester.element(find.byType(Scaffold));
         
         // Verify dark theme colors are applied

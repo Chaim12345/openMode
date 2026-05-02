@@ -13,7 +13,6 @@ class ModelPickerPage extends StatefulWidget {
 }
 
 class _ModelPickerPageState extends State<ModelPickerPage> {
-  String? _selectedProviderId;
   String? _selectedModelId;
   ProvidersResponse? _providersResponse;
   bool _isLoading = true;
@@ -39,7 +38,6 @@ class _ModelPickerPageState extends State<ModelPickerPage> {
     setState(() {
       _providersResponse = result;
       if (result.providers.isNotEmpty) {
-        _selectedProviderId = result.providers.first.id;
         if (result.providers.first.models.isNotEmpty) {
           _selectedModelId = result.providers.first.models.keys.first;
         }
@@ -56,7 +54,6 @@ class _ModelPickerPageState extends State<ModelPickerPage> {
 
   void _selectModel(String providerId, String modelId) {
     setState(() {
-      _selectedProviderId = providerId;
       _selectedModelId = modelId;
     });
     

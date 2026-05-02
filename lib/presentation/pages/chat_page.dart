@@ -96,8 +96,6 @@ class _ChatPageState extends State<ChatPage> {
       );
       
       if (mounted && response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final newSessionId = data['session_id'];
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Session forked successfully')),
         );
@@ -219,8 +217,8 @@ class _ChatPageState extends State<ChatPage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                    Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                    Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.2),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(8),
@@ -355,10 +353,10 @@ class _ChatPageState extends State<ChatPage> {
                       colors: [
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
                         Theme.of(
                           context,
-                        ).colorScheme.surfaceContainerHighest.withOpacity(0.1),
+                        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -367,7 +365,7 @@ class _ChatPageState extends State<ChatPage> {
                     border: Border.all(
                       color: Theme.of(
                         context,
-                      ).colorScheme.outline.withOpacity(0.2),
+                      ).colorScheme.outline.withValues(alpha: 0.2),
                     ),
                   ),
                   child: Row(
@@ -401,7 +399,7 @@ class _ChatPageState extends State<ChatPage> {
                         size: 16,
                         color: Theme.of(
                           context,
-                        ).colorScheme.primary.withOpacity(0.7),
+                        ).colorScheme.primary.withValues(alpha: 0.7),
                       ),
                     ],
                   ),

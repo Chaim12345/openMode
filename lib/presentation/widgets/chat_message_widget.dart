@@ -56,7 +56,7 @@ class ChatMessageWidget extends StatelessWidget {
                       (isUser
                               ? Theme.of(context).colorScheme.primary
                               : Theme.of(context).colorScheme.tertiary)
-                          .withOpacity(0.3),
+                          .withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -78,10 +78,10 @@ class ChatMessageWidget extends StatelessWidget {
                 color: isUser
                     ? Theme.of(
                         context,
-                      ).colorScheme.primaryContainer.withOpacity(0.1)
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.1)
                     : Theme.of(
                         context,
-                      ).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                      ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(16).copyWith(
                   topLeft: isUser
                       ? const Radius.circular(16)
@@ -91,7 +91,7 @@ class ChatMessageWidget extends StatelessWidget {
                       : const Radius.circular(16),
                 ),
                 border: Border.all(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
                 ),
               ),
               child: Column(
@@ -109,10 +109,10 @@ class ChatMessageWidget extends StatelessWidget {
                           color: isUser
                               ? Theme.of(
                                   context,
-                                ).colorScheme.primary.withOpacity(0.1)
+                                ).colorScheme.primary.withValues(alpha: 0.1)
                               : Theme.of(
                                   context,
-                                ).colorScheme.tertiary.withOpacity(0.1),
+                                ).colorScheme.tertiary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -135,7 +135,7 @@ class ChatMessageWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Theme.of(
                             context,
-                          ).colorScheme.outline.withOpacity(0.1),
+                          ).colorScheme.outline.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
@@ -338,7 +338,7 @@ class ChatMessageWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 4),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Theme.of(context).dividerColor),
       ),
@@ -383,10 +383,10 @@ class ChatMessageWidget extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       constraints: const BoxConstraints(maxHeight: 600),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+        color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Column(
@@ -456,8 +456,8 @@ class ChatMessageWidget extends StatelessWidget {
     return Chip(
       avatar: Icon(icon, size: 16, color: color),
       label: Text(label),
-      backgroundColor: color.withOpacity(0.1),
-      side: BorderSide(color: color.withOpacity(0.3)),
+      backgroundColor: color.withValues(alpha: 0.1),
+      side: BorderSide(color: color.withValues(alpha: 0.3)),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       visualDensity: VisualDensity.compact,
     );
@@ -541,7 +541,7 @@ class ChatMessageWidget extends StatelessWidget {
         color: Theme.of(context).colorScheme.errorContainer,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.error.withOpacity(0.3),
+          color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
