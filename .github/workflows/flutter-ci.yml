@@ -33,9 +33,7 @@ jobs:
           echo "No errors found (warnings are OK)"
 
       - name: Run tests
-        run: |
-          # Skip integration tests that cause compiler memory issues
-          flutter test --coverage test/ --ignore-timeouts 2>/dev/null || true
+        run: flutter test --coverage
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
